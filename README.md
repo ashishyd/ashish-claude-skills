@@ -30,6 +30,8 @@ These tools are for research and planning. They are not financial advice. Tradin
 | `repo-agent-guide` | A repo has no CLAUDE.md or AGENTS.md, or the existing one is stale. |
 | `coding-standards` | Writing or changing code in any language. |
 | `standards-review` | Code was just changed and is about to be called done, committed or merged. |
+| `dependency-versions` | Adding, upgrading, pinning or removing a package, or fixing a version conflict. |
+| `dependency-cycles` | Adding imports or moving code between modules, or fixing a circular import. Includes `cycles.py`, a stdlib script that finds import cycles in Python and JS/TS. |
 
 ## Install
 
