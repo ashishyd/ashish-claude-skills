@@ -1,6 +1,6 @@
 {
   "name": "quality-gates",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Seven short skills for TypeScript types, Vitest and Playwright tests, security, design and UX audits, and keeping CLAUDE.md in sync with code changes, with a hook that names the right one for the file being edited, once per session.",
   "author": { "name": "Ashish Yadav" },
   "license": "MIT",

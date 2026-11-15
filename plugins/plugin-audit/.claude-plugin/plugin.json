@@ -1,6 +1,6 @@
 {
   "name": "plugin-audit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Read-only audit of installed Claude Code plugins and skills: a security scan of hooks, scripts, MCP configs and SKILL.md text, and a workflow map of overlaps, keep-or-drop picks, suggested chains and hook conflicts.",
   "author": { "name": "Ashish Yadav" },
   "license": "MIT",

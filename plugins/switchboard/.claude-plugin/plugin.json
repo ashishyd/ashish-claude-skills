@@ -1,6 +1,6 @@
 {
   "name": "switchboard",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Suggests the cheapest Claude model and effort level that fits each prompt (Haiku for lookups, Sonnet for routine edits, Opus for architecture, security and hard bugs), from a UserPromptSubmit hook that stays quiet when the current model already fits. Suggests only; never switches.",
   "author": { "name": "Ashish Yadav" },
   "license": "MIT",
