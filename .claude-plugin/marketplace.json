@@ -12,6 +12,16 @@
       "name": "confluence-diagrams",
       "source": "./plugins/confluence-diagrams",
       "description": "Turns a Confluence page into validated, explorable HTML diagrams through archify, citing the page section behind every node."
+    },
+    {
+      "name": "plugin-audit",
+      "source": "./plugins/plugin-audit",
+      "description": "Read-only audit of installed plugins and skills: security scan of hooks, scripts, MCP configs and SKILL.md text, plus a workflow map of overlaps, keep-or-drop picks and hook conflicts."
+    },
+    {
+      "name": "switchboard",
+      "source": "./plugins/switchboard",
+      "description": "Suggests the cheapest Claude model and effort level that fits each prompt, from a UserPromptSubmit hook that stays quiet when the current model already fits."
     }
   ]
 }
