@@ -27,6 +27,10 @@ CODE_RULES = [
      r"|middleware|(^|/)api/|(^|/)route\.|\.sql$"),
     ("design-audit", UI),
     ("ux-audit", UI),
+    # shortcut: any source edit counts as "may change business logic"; the skill
+    # itself decides whether CLAUDE.md needs a line. Add extensions as needed.
+    ("claude-md-sync",
+     r"\.([cm]?[jt]sx?|py|go|rb|java|kt|rs|swift|cs|php|vue|svelte|sql|prisma)$"),
 ]
 HINTS = {
     "typescript-types": "load `{0}typescript-types` before more TypeScript edits",
@@ -37,6 +41,9 @@ HINTS = {
                            "`{0}security-code-audit` on the diff",
     "design-audit": "before calling this UI work done, run `{0}design-audit`",
     "ux-audit": "and `{0}ux-audit`",
+    "claude-md-sync": "if this changes business logic, data model, API, "
+                      "architecture or commands, run `{0}claude-md-sync` "
+                      "before calling it done",
 }
 
 

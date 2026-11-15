@@ -10,17 +10,20 @@ sys.path.insert(0, HERE)
 from route import skills_for  # noqa: E402
 
 CASES = {
-    "src/lib/money.ts": ["typescript-types"],
+    "src/lib/money.ts": ["typescript-types", "claude-md-sync"],
     "src/lib/money.test.ts": ["vitest-tests"],
     "e2e/checkout.spec.ts": ["playwright-tests"],
     "playwright.config.ts": ["playwright-tests"],
-    "src/components/Button.tsx": ["typescript-types", "design-audit", "ux-audit"],
-    "src/app/api/users/route.ts": ["typescript-types", "security-code-audit"],
-    "src/auth/session.py": ["security-code-audit"],
-    "db/001_init.sql": ["security-code-audit"],
+    "src/components/Button.tsx": ["typescript-types", "design-audit", "ux-audit",
+                                  "claude-md-sync"],
+    "src/app/api/users/route.ts": ["typescript-types", "security-code-audit",
+                                   "claude-md-sync"],
+    "src/auth/session.py": ["security-code-audit", "claude-md-sync"],
+    "db/001_init.sql": ["security-code-audit", "claude-md-sync"],
     "styles/app.css": ["design-audit", "ux-audit"],
     "README.md": [],
-    "main.go": [],
+    "CLAUDE.md": [],
+    "main.go": ["claude-md-sync"],
     "": [],
 }
 for path, want in CASES.items():
@@ -43,6 +46,7 @@ try:
     assert first["hookEventName"] == "PostToolUse"
     assert "quality-gates:typescript-types" in first["additionalContext"]
     assert "quality-gates:ux-audit" in first["additionalContext"]
+    assert "quality-gates:claude-md-sync" in first["additionalContext"]
     assert run(edit) == "", "second edit in a session must be silent"
     assert run("not json") == "", "bad input must be silent"
 finally:

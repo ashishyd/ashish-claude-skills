@@ -1,0 +1,8 @@
+{
+  "name": "confluence-diagrams",
+  "version": "0.1.0",
+  "description": "Turns a Confluence page into validated, explorable HTML diagrams (workflow, state, sequence, data flow, ERD, timeline, architecture) through the archify skill, with every node cited to the page section it came from and inferred parts marked.",
+  "author": { "name": "Ashish Yadav" },
+  "license": "MIT",
+  "keywords": ["confluence", "diagram", "archify", "documentation", "visualization"]
+}
