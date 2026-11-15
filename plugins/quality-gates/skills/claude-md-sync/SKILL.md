@@ -56,3 +56,13 @@ Open: <anything unsure, e.g. a rule you could not confirm in the code>
 - Write only facts you confirmed in the code or diff. If the intent of a business rule is unclear, write NEEDS DECISION and ask; do not guess the why.
 - Touch only CLAUDE.md files. Do not commit.
 - When the user's or the repo's instructions conflict with this skill, they win.
+
+## Opus advisor
+
+Key decisions in this skill: a new architecture rule or module boundary, a business-rule wording you cannot confirm in the code, and moving facts between CLAUDE.md files.
+
+Before acting on one, get a second opinion: call the `Agent` tool with `model: "opus"` (`subagent_type` `Plan`, read-only). Give it the decision, each option in one line, the evidence (`file:line`, measurements, the diff) and the constraints. Ask for a pick, the main risk of that pick, and what would change its mind. Do not send secrets or `.env` contents.
+
+- One call per decision, not per finding. Skip it for routine choices the steps above already settle.
+- If the advisor disagrees with you, show both views to the user in one line each and let them choose. Do not pick silently on architecture, auth, data model or money.
+- In the report, list each advised decision: `Advisor: <decision> -> <pick> (<agreed | overruled because ...>)`.

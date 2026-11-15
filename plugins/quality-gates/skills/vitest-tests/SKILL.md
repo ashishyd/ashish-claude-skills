@@ -76,3 +76,13 @@ Not covered: <cases left out and why>
 - Weaken an assertion, or add `.skip`, to get to green.
 - Change production code to make a test pass without saying so.
 - Leave `.only` in the file.
+
+## Opus advisor
+
+Key decisions in this skill: the test boundary (unit vs integration, what to mock), a change to production code for testability, and tests that pin money, auth or a business rule.
+
+Before acting on one, get a second opinion: call the `Agent` tool with `model: "opus"` (`subagent_type` `Plan`, read-only). Give it the decision, each option in one line, the evidence (`file:line`, measurements, the diff) and the constraints. Ask for a pick, the main risk of that pick, and what would change its mind. Do not send secrets or `.env` contents.
+
+- One call per decision, not per finding. Skip it for routine choices the steps above already settle.
+- If the advisor disagrees with you, show both views to the user in one line each and let them choose. Do not pick silently on architecture, auth, data model or money.
+- In the report, list each advised decision: `Advisor: <decision> -> <pick> (<agreed | overruled because ...>)`.

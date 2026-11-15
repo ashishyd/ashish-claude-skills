@@ -67,3 +67,13 @@ Passes done: mouse | keyboard | screen-reader tree | mobile width
 - Report findings; change code only when asked.
 - Every finding names the step and a source. Preference with no source is labelled `opinion` and filed under Minor.
 - Audit the flow that exists. Do not propose new features.
+
+## Opus advisor
+
+Key decisions in this skill: a Blocker or Major finding that depends on judgement rather than a named source, a fix that changes a flow's steps or navigation, and a trade-off between accessibility and the brief.
+
+Before acting on one, get a second opinion: call the `Agent` tool with `model: "opus"` (`subagent_type` `Plan`, read-only). Give it the decision, each option in one line, the evidence (`file:line`, measurements, the diff) and the constraints. Ask for a pick, the main risk of that pick, and what would change its mind. Do not send secrets or `.env` contents.
+
+- One call per decision, not per finding. Skip it for routine choices the steps above already settle.
+- If the advisor disagrees with you, show both views to the user in one line each and let them choose. Do not pick silently on architecture, auth, data model or money.
+- In the report, list each advised decision: `Advisor: <decision> -> <pick> (<agreed | overruled because ...>)`.
