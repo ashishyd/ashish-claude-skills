@@ -1,0 +1,8 @@
+{
+  "name": "quality-gates",
+  "version": "0.1.0",
+  "description": "Six short skills for TypeScript types, Vitest and Playwright tests, and security, design and UX audits, with a hook that names the right one for the file being edited, once per session.",
+  "author": { "name": "Ashish Yadav" },
+  "license": "MIT",
+  "keywords": ["typescript", "vitest", "playwright", "security", "design", "ux", "audit"]
+}

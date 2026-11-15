@@ -33,6 +33,29 @@ These tools are for research and planning. They are not financial advice. Tradin
 | `dependency-versions` | Adding, upgrading, pinning or removing a package, or fixing a version conflict. |
 | `dependency-cycles` | Adding imports or moving code between modules, or fixing a circular import. Includes `cycles.py`, a stdlib script that finds import cycles in Python and JS/TS. |
 
+## quality-gates plugin
+
+A plugin in `plugins/quality-gates/` with six short skills and one hook.
+
+| Skill | When Claude uses it |
+|-------|---------------------|
+| `typescript-types` | Writing or changing TypeScript, or fixing a type error. |
+| `vitest-tests` | Writing or fixing unit and component tests with Vitest. |
+| `playwright-tests` | Writing or fixing Playwright end-to-end tests. |
+| `security-code-audit` | Code touching auth, input, queries, uploads, webhooks or secrets was just changed. |
+| `design-audit` | A UI component or page was just built or changed: how it looks. |
+| `ux-audit` | A user-facing flow was just built or changed: how it works, including accessibility. |
+
+The hook runs after each file edit and names the skill that fits the file (by extension and path), once per skill per session. Nothing is added to context for other files, and a skill's body is read only when Claude loads it.
+
+Install it from inside Claude Code (2.1.275 or later):
+
+```
+/plugin install quality-gates --marketplace ashishyd/ashish-claude-skills
+```
+
+On older versions, run `/plugin marketplace add ashishyd/ashish-claude-skills` first, then `/plugin install quality-gates@ashish-claude-skills`. The hook needs `python3` on the PATH.
+
 ## Install
 
 Copy the skills you want into your Claude Code skills folder:

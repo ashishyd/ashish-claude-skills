@@ -1,0 +1,12 @@
+{
+  "name": "ashish-claude-skills",
+  "description": "Ashish's Claude Code skills: engineering quality gates for TypeScript, tests and audits.",
+  "owner": { "name": "Ashish Yadav" },
+  "plugins": [
+    {
+      "name": "quality-gates",
+      "source": "./plugins/quality-gates",
+      "description": "TypeScript types, Vitest and Playwright tests, and security, design and UX audits, routed by a hook to the file being edited."
+    }
+  ]
+}
