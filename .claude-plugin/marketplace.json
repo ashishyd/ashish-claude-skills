@@ -22,6 +22,11 @@
       "name": "switchboard",
       "source": "./plugins/switchboard",
       "description": "Suggests the cheapest Claude model and effort level that fits each prompt, from a UserPromptSubmit hook that stays quiet when the current model already fits."
+    },
+    {
+      "name": "feature-flow",
+      "source": "./plugins/feature-flow",
+      "description": "New-feature requests run as Opus plan -> checklist -> Sonnet (medium effort) build and test in fresh-context subagents, with a Stop hook that keeps README.md updated."
     }
   ]
 }

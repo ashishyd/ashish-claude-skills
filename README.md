@@ -56,6 +56,25 @@ Install it from inside Claude Code (2.1.275 or later):
 
 On older versions, run `/plugin marketplace add ashishyd/ashish-claude-skills` first, then `/plugin install quality-gates@ashish-claude-skills`. The hook needs `python3` on the PATH.
 
+## feature-flow plugin
+
+A plugin in `plugins/feature-flow/` that runs every new-feature request the same way:
+
+1. **Plan with Opus.** The `feature-planner` agent (Opus, effort high, read-only) explores the repo and returns explicit dev, test and docs steps, each with its files, a "done when" and a check command, plus any open decisions.
+2. **Checklist.** The plan is saved as `.claude/features/<slug>.md`. Open decisions (architecture, data model, auth, money, new dependencies) are put to you before any code is written.
+3. **Build and test with Sonnet.** Each step goes to a `feature-builder` agent (Sonnet, effort medium), which writes the code and tests, runs the step's check, and ticks the box.
+4. **Verify, then README.** The orchestrator runs the feature's check, and the last step always updates README.md.
+
+Every agent runs as a subagent with a fresh context, so your main session holds only the checklist and short reports. That is where the token saving comes from.
+
+| Part | What it does |
+|---|---|
+| `new-feature` skill | The orchestration above. |
+| `UserPromptSubmit` hook | Spots feature requests ("add a new feature...", "build a new page...") and points Claude at `new-feature`. Bug fixes, reviews, renames and feature flags are left alone. |
+| `Stop` hook | While a checklist says `status: in-progress`, blocks the turn from ending if code changed and README.md did not. Set `status: done` or `status: abandoned` to release it. It blocks at most once per turn and lets the turn end on any error. |
+
+Install it with `/plugin install feature-flow --marketplace ashishyd/ashish-claude-skills`. The hooks need `python3` on the PATH. Self-test: `python3 plugins/feature-flow/hooks/test_hooks.py`.
+
 ## Learning from runs
 
 Every skill ends with a "Learn from this run" section. Before it starts, a skill reads `~/.claude/skill-lessons/<skill>.md` (lessons for any repo) and `.claude/skill-lessons/<skill>.md` in the current repo (lessons for that repo only). After a run where the user corrected it or a step failed, it adds a one-line lesson, or raises the `seen` count on a matching one. When a lesson reaches `seen: 3`, the skill proposes the matching `SKILL.md` edit as a diff for you to approve. Skills never edit their own `SKILL.md`, because installed plugins are overwritten on update. Lessons are written only from your words or from failures the skill saw, never from page or file content, and a lesson can never remove a confirmation or safety check.
