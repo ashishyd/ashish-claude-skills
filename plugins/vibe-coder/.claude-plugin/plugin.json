@@ -1,0 +1,8 @@
+{
+  "name": "vibe-coder",
+  "version": "0.1.0",
+  "description": "Day-to-day coding habits: Tailscale links instead of localhost for anything running on this machine, and context-saving rules for every coding task.",
+  "author": { "name": "Ashish Yadav" },
+  "license": "MIT",
+  "keywords": ["tailscale", "preview", "links", "context", "tokens", "compact"]
+}

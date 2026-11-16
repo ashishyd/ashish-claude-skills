@@ -27,6 +27,11 @@
       "name": "feature-flow",
       "source": "./plugins/feature-flow",
       "description": "New-feature requests run as Opus plan -> checklist -> Sonnet (medium effort) build and test in fresh-context subagents, with a Stop hook that keeps README.md updated."
+    },
+    {
+      "name": "vibe-coder",
+      "source": "./plugins/vibe-coder",
+      "description": "Tailscale links instead of localhost for anything running on this machine, and context-saving rules for every coding task."
     }
   ]
 }

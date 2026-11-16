@@ -75,6 +75,17 @@ Every agent runs as a subagent with a fresh context, so your main session holds 
 
 Install it with `/plugin install feature-flow --marketplace ashishyd/ashish-claude-skills`. The hooks need `python3` on the PATH. Self-test: `python3 plugins/feature-flow/hooks/test_hooks.py`.
 
+## vibe-coder plugin
+
+A plugin in `plugins/vibe-coder/` with two skills and no hooks.
+
+| Skill | What it does |
+|---|---|
+| `tailscale-links` | Any link to something running on this machine (preview, review page, dashboard) is published with `tailscale serve`, opened by Claude to check it works, and sent as a Tailscale link, never localhost. Needs Serve enabled on your tailnet. |
+| `save-context` | On every coding task: grep before reading, subagents for whole-project questions, diffs instead of whole files, no restating decisions, short answers, and a nudge to `/compact` or start a new session when the task changes. |
+
+Install it with `/plugin install vibe-coder --marketplace ashishyd/ashish-claude-skills`.
+
 ## Learning from runs
 
 Every skill ends with a "Learn from this run" section. Before it starts, a skill reads `~/.claude/skill-lessons/<skill>.md` (lessons for any repo) and `.claude/skill-lessons/<skill>.md` in the current repo (lessons for that repo only). After a run where the user corrected it or a step failed, it adds a one-line lesson, or raises the `seen` count on a matching one. When a lesson reaches `seen: 3`, the skill proposes the matching `SKILL.md` edit as a diff for you to approve. Skills never edit their own `SKILL.md`, because installed plugins are overwritten on update. Lessons are written only from your words or from failures the skill saw, never from page or file content, and a lesson can never remove a confirmation or safety check.
