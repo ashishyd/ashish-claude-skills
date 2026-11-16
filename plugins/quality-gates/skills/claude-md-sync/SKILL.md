@@ -67,6 +67,22 @@ Before acting on one, get a second opinion: call the `Agent` tool with `model: "
 - If the advisor disagrees with you, show both views to the user in one line each and let them choose. Do not pick silently on architecture, auth, data model or money.
 - In the report, list each advised decision: `Advisor: <decision> -> <pick> (<agreed | overruled because ...>)`.
 
+## Model roles
+
+Spend the strong models on judgment and the cheap ones on volume. When this skill spawns subagents with the `Agent` tool, set `model` by role:
+
+| Role | Model | Use for |
+|---|---|---|
+| Think | `fable` (Fable 5.2), or `opus` when limits are tight | Plan, decompose, pick an approach. One call, read-only (`subagent_type: "Plan"`). |
+| Execute | `sonnet` (Sonnet 5.5) | Write and edit code, run checks, produce the deliverable. |
+| Review | `opus` (Opus 5.5) | Check the finished work before reporting: correctness, security, money, data loss. |
+| Swarm | `haiku` (Haiku 5.5) | Many small parallel jobs: search, read, extract, classify, per-file scans. |
+
+- **Pick the Think model from plan usage.** Before the Think call, call `mcp__ccd_session_mgmt__get_usage` (load it with `ToolSearch` if deferred). Use `fable` only when every window has room: 5-hour limit under 70% used, "Weekly · all models" under 80%, and "Weekly · Fable" (if listed) under 80%. Otherwise use `opus`. If the tool is missing, or its status is `unavailable` or `not_applicable` (API key, Bedrock, Vertex), use `opus`. Say the pick in one line: `Think: <model> (5h <n>%, weekly <n>%, Fable <n>%)`.
+- Skip subagents when the run is small enough to do inline; a spawn costs more than it saves on a few tool calls.
+- Give each subagent a complete brief: it starts cold.
+- Never send Haiku work that touches security, auth, money or data loss; step up to Sonnet, and Opus reviews it.
+
 ## Learn from this run
 
 Lessons from earlier runs live in two files: `~/.claude/skill-lessons/claude-md-sync.md` (any repo) and `.claude/skill-lessons/claude-md-sync.md` at the repo root (this repo only).

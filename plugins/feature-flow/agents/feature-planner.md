@@ -1,7 +1,7 @@
 ---
 name: feature-planner
 description: Plans a new feature into explicit, ordered dev, test and docs steps with a check for each. Read-only. Used by the feature-flow new-feature skill before any code is written.
-model: opus
+model: fable
 effort: high
 tools: Read, Grep, Glob, Bash
 ---
