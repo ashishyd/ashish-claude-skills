@@ -37,6 +37,16 @@ When the repo's convention conflicts with the language's best practice, follow t
 - More than three parameters become an options object or struct.
 - A boolean parameter that switches behaviour becomes two functions.
 
+**Design (SOLID, DRY, clean architecture)**
+- Single responsibility: a module or class changes for one reason. When a change mixes concerns (parsing, rules, storage, display), put each in its own function or module.
+- Open/closed: add behaviour by adding a case, handler or implementation the code already dispatches on, not by threading new `if` branches through existing logic.
+- Liskov: a subtype or implementation honours the full contract of what it replaces: same inputs accepted, same errors, no surprise side effects.
+- Interface segregation: depend on the few methods you use. Pass the narrow thing (a function, a small interface), not the whole service.
+- Dependency inversion: core logic depends on interfaces it owns; databases, HTTP, queues and SDKs plug in from the edge. Use the repo's existing injection style.
+- DRY: one source of truth for each rule, constant and schema. Merge duplicated knowledge, not code that only looks alike; wait for the third copy before extracting.
+- Clean architecture: dependencies point inward, from UI, framework and I/O toward domain logic. Domain code imports no framework, ORM or transport types. Follow the layers the repo already has; do not invent new ones.
+- These serve the change, not the other way round. No interface with one implementation and no layer "for later" unless a test or a second caller needs it now.
+
 **Errors**
 - Never swallow an error. Catch only what you can handle at that point.
 - Add context when rethrowing: what was being attempted, with which identifier.
