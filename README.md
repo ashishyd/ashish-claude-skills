@@ -60,7 +60,7 @@ On older versions, run `/plugin marketplace add ashishyd/ashish-claude-skills` f
 
 A plugin in `plugins/feature-flow/` that runs every new-feature request the same way:
 
-1. **Plan with Opus.** The `feature-planner` agent (Opus, effort high, read-only) explores the repo and returns explicit dev, test and docs steps, each with its files, a "done when" and a check command, plus any open decisions.
+1. **Plan with Opus.** The `feature-planner` agent (Opus, effort high, read-only) explores the repo and returns explicit dev, test and docs steps, each with its files, a "done when" and a check command, plus any open decisions. Step 1 always puts the feature behind a flag: the repo's existing flag system, or a `FEATURE_<NAME>_ENABLED` env var (default off) when there is none.
 2. **Checklist.** The plan is saved as `.claude/features/<slug>.md`. Open decisions (architecture, data model, auth, money, new dependencies) are put to you before any code is written.
 3. **Build and test with Sonnet.** Each step goes to a `feature-builder` agent (Sonnet, effort medium), which writes the code and tests, runs the step's check, and ticks the box.
 4. **Verify, then README.** The orchestrator runs the feature's check, and the last step always updates README.md.

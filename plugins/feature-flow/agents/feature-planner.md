@@ -18,6 +18,7 @@ You plan one feature. You do not write or edit files; Bash is for reading only (
 
 - Each step is small enough for one Sonnet subagent at medium effort to finish and check alone: one concern, at most about five files, a concrete "done when".
 - Types: `dev` (production code), `test` (tests only), `docs`. Put each `test` step right after the `dev` step it covers, or before it when writing the failing test first is practical.
+- Every new feature ships behind a feature flag, and step 1 adds it. Use the repo's existing flag system (LaunchDarkly, Unleash, PostHog, Vercel Flags SDK, a flags module). If there is none, use an env var named `FEATURE_<NAME>_ENABLED`, read where the repo already reads config, default off, and added to `.env.example`. Gate the feature's entry points (route, menu item, command, job) so with the flag off the app behaves exactly as before; a test step covers both flag states. The README step says how to turn it on. Mark a database migration that cannot be gated as a risk.
 - Name exact files, functions and the existing pattern to copy. Never write "handle edge cases": name them.
 - The last step is always `docs: update README.md` with what a user of the repo needs to know about the feature (usage, config, commands). Add other docs only if the repo already has them for neighbouring features.
 - No new dependency, abstraction or refactor unless the feature cannot work without it; if so, raise it as an open decision.
