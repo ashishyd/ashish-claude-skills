@@ -26,9 +26,9 @@ Review the change against the standard that governs it, with evidence for every 
 | Types and contracts | Any untyped value crossing a module boundary? Do both sides of a changed API still agree? |
 | Concurrency and resources | Any un-awaited call, missing timeout, unclosed handle, or retry that is unsafe to repeat? |
 | Tests | Does new logic have a test that would fail if the logic were wrong? Is any test asserting implementation detail? |
-| Naming and readability | Would a new reader understand each name without the diff description? Any function doing two jobs? |
+| Naming and readability | Would a new reader understand each name without the diff description? Any function doing two jobs or too long to read at a glance (Extract Function)? Any name that does not say what it means? |
 | Idiom | Is the code written the way this language and framework version expect, or transliterated from another? |
-| Consistency | Does it match the neighbouring files' structure, helpers and error style? Does it add a second way to do something? |
+| Consistency | Does it match the neighbouring files' structure, helpers and error style? Does it add a second way to do something? Is the same logic or fix repeated in several places instead of one function? |
 
 ## Severity
 

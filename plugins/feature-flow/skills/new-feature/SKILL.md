@@ -9,7 +9,9 @@ You are the orchestrator. You plan through the Opus planner, build through Sonne
 
 ## 1. Plan (Opus)
 
-Call the `Agent` tool with `subagent_type: "feature-flow:feature-planner"`, `model: "opus"`, `effort: "high"`. Prompt: the user's request in their own words, plus any constraint they gave in this session. Do not read the codebase yourself first; the planner does that.
+**Unfamiliar feature? Look before you plan.** If neither this repo nor a well-known pattern already covers the feature (a sync engine, a rich-text editor, rate limiting, a CRDT, an OAuth flow you have not built), search GitHub first: `gh search repos` / `gh search code`, or a developer search tool. Pick 2–4 maintained open-source projects that solve it, and compare them in one short table: approach, key trade-off, licence, how well it fits this repo's stack. Recommend one approach and give the planner the table. Borrow ideas, not code: copy code only if the licence allows it, and keep its notice. Skip this for features the repo or the stack already shows how to build.
+
+Call the `Agent` tool with `subagent_type: "feature-flow:feature-planner"`, `model: "opus"`, `effort: "high"`. Prompt: the user's request in their own words, any constraint they gave in this session, and the comparison table if you made one. Do not read the codebase yourself first; the planner does that.
 
 ## 2. Write the checklist
 

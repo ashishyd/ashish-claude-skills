@@ -77,12 +77,14 @@ Install it with `/plugin install feature-flow --marketplace ashishyd/ashish-clau
 
 ## vibe-coder plugin
 
-A plugin in `plugins/vibe-coder/` with two skills and no hooks.
+A plugin in `plugins/vibe-coder/` with four skills and no hooks.
 
 | Skill | What it does |
 |---|---|
 | `tailscale-links` | Any link to something running on this machine (preview, review page, dashboard) is published with `tailscale serve`, opened by Claude to check it works, and sent as a Tailscale link, never localhost. Needs Serve enabled on your tailnet. |
 | `save-context` | On every coding task: grep before reading, subagents for whole-project questions, diffs instead of whole files, no restating decisions, short answers, and a nudge to `/compact` or start a new session when the task changes. |
+| `state-machine-hunter` | Finds implicit state machines (boolean soup, string statuses, step counters, null-as-loading), reports them ranked by user harm with the impossible states each allows, then on your yes makes one explicit at a time (discriminated union, reducer or enum + transition table in the repo's own idiom) behind pinned tests, keeping external shapes unchanged. |
+| `bug-triager` | Scores each bug 1-10 on frequency and severity. A product below 5 is drafted as an issue (filed on your yes) and the code is left alone; 5 or more gets a root-cause fix with a test. Data-loss, security and money bugs are always raised. No code for rare or future cases nobody asked about. |
 
 Install it with `/plugin install vibe-coder --marketplace ashishyd/ashish-claude-skills`.
 

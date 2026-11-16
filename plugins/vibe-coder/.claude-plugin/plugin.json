@@ -1,8 +1,8 @@
 {
   "name": "vibe-coder",
-  "version": "0.1.0",
-  "description": "Day-to-day coding habits: Tailscale links instead of localhost for anything running on this machine, and context-saving rules for every coding task.",
+  "version": "0.2.0",
+  "description": "Day-to-day coding habits: Tailscale links instead of localhost for anything running on this machine, context-saving rules for every coding task, a hunter that finds implicit state machines and makes them explicit, and a bug triager that only fixes bugs worth fixing.",
   "author": { "name": "Ashish Yadav" },
   "license": "MIT",
-  "keywords": ["tailscale", "preview", "links", "context", "tokens", "compact"]
+  "keywords": ["tailscale", "preview", "links", "context", "tokens", "compact", "state-machine", "triage"]
 }

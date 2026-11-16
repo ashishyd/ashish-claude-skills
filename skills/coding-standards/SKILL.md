@@ -79,6 +79,16 @@ When the repo's convention conflicts with the language's best practice, follow t
 **Diff discipline**
 - Make the smallest complete change. Do not reformat or rename what you were not asked to touch.
 
+## Refactor prompts
+
+Apply these to code you wrote or touched, not to the rest of the file (see Diff discipline). When the user asks for a clean-up, run them across the scope they name.
+
+| You notice | Do |
+|---|---|
+| One function is too long | Find functions that are too long and split them with Extract Function. |
+| You make the same fix in several places | Find duplicated code and merge it into one function. |
+| You can't tell what something does from its name | Find names that don't say what they mean and rename them. |
+
 ## Language cards
 
 | Language | Standard | Tools | Rules models most often break |
