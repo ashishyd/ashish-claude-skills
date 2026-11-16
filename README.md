@@ -77,7 +77,9 @@ Install it with `/plugin install feature-flow --marketplace ashishyd/ashish-clau
 
 ## vibe-coder plugin
 
-A plugin in `plugins/vibe-coder/` with four skills and no hooks.
+A plugin in `plugins/vibe-coder/` with four skills and one hook.
+
+**Hook `trim_output.py` (PreToolUse, Bash):** noisy commands (installs, builds, test runs, `docker build`, `make`) with no pipe or redirect of their own are rewritten to pipe through a trimmer with `pipefail`, so the exit code is kept. It keeps the first 30 and last 80 lines, up to 60 error or warning lines in between, and collapses repeated lines. Add `# no-trim` to a command, or set `CLAUDE_NO_TRIM=1`, to see everything. It sets no permission decision, so your permission prompts are unchanged.
 
 | Skill | What it does |
 |---|---|
@@ -87,6 +89,30 @@ A plugin in `plugins/vibe-coder/` with four skills and no hooks.
 | `bug-triager` | Scores each bug 1-10 on frequency and severity. A product below 5 is drafted as an issue (filed on your yes) and the code is left alone; 5 or more gets a root-cause fix with a test. Data-loss, security and money bugs are always raised. No code for rare or future cases nobody asked about. |
 
 Install it with `/plugin install vibe-coder --marketplace ashishyd/ashish-claude-skills`.
+
+## pr-review plugin
+
+A plugin in `plugins/pr-review/` with three skills and no hooks.
+
+| Skill | What it does |
+|---|---|
+| `reviewer-brief` | Writes a one-screen brief for the human reviewer: what changed and why, where to look hard (`file:line`, riskiest first), how it was verified, what was not, risk if wrong and rollback. Goes into the PR body only on your yes. |
+| `agent-spend` | Token usage per repo, branch and PR from your local Claude Code transcripts (`scripts/spend_by_pr.py`), PRs mapped with `gh`. Shows dollars only with a rates file you supply. |
+| `pr-splitter` | Plans a large branch as a stack of small PRs, one concern each, that build and pass tests on their own. On your yes it creates the branches from the original (left untouched), checks the stack's final diff equals the original, and asks before pushing. |
+
+Install it with `/plugin install pr-review --marketplace ashishyd/ashish-claude-skills`.
+
+## repo-health plugin
+
+A plugin in `plugins/repo-health/` with three skills and no hooks. They work in any stack.
+
+| Skill | What it does |
+|---|---|
+| `env-doctor` | Read-only. Compares what the repo declares (runtime versions, package manager, tools, env var names, services) with what this machine has, and gives one fix per gap, blocking gaps first. Never opens `.env` files or prints values. |
+| `api-drift` | Lists server routes and client calls across common frameworks, normalises paths, and reports missing routes, method and shape mismatches, and routes with no caller, with `file:line` on both sides. |
+| `flag-cleanup` | Inventories feature flags for any vendor or home-made flags, asks which are settled, then removes one flag per change, keeping the winning branch and deleting the losing one. Never changes vendor state. |
+
+Install it with `/plugin install repo-health --marketplace ashishyd/ashish-claude-skills`.
 
 ## Learning from runs
 

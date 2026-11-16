@@ -1,0 +1,8 @@
+{
+  "name": "repo-health",
+  "version": "0.1.0",
+  "description": "Repo checks that work in any stack: an environment doctor that says why the project will not run here, API drift between server routes and client calls, and vendor-neutral cleanup of stale feature flags.",
+  "author": { "name": "Ashish Yadav" },
+  "license": "MIT",
+  "keywords": ["environment", "doctor", "setup", "api", "drift", "contract", "feature-flags", "cleanup"]
+}

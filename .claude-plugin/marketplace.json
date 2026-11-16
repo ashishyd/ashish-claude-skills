@@ -1,7 +1,9 @@
 {
   "name": "ashish-claude-skills",
   "description": "Ashish's Claude Code skills: engineering quality gates for TypeScript, tests and audits.",
-  "owner": { "name": "Ashish Yadav" },
+  "owner": {
+    "name": "Ashish Yadav"
+  },
   "plugins": [
     {
       "name": "quality-gates",
@@ -31,7 +33,17 @@
     {
       "name": "vibe-coder",
       "source": "./plugins/vibe-coder",
-      "description": "Tailscale links instead of localhost for anything running on this machine, and context-saving rules for every coding task."
+      "description": "Tailscale links instead of localhost for anything running on this machine, and context-saving rules for every coding task. Plus a hook that trims noisy install, build and test output."
+    },
+    {
+      "name": "pr-review",
+      "source": "./plugins/pr-review",
+      "description": "A one-screen brief for the human reviewer, a splitter that cuts a large diff into small stacked PRs, and agent token spend broken down by PR."
+    },
+    {
+      "name": "repo-health",
+      "source": "./plugins/repo-health",
+      "description": "Any-stack repo checks: an environment doctor, API drift between server routes and client calls, and vendor-neutral feature-flag cleanup."
     }
   ]
 }
