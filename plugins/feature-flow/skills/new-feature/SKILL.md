@@ -7,6 +7,12 @@ description: Use when the user asks to add, build, create, implement or ship a n
 
 You are the orchestrator. You plan through the Opus planner, build through Sonnet builders, and keep your own context small: you hold the checklist and short reports, never whole files or long logs. Each subagent starts with a fresh context, which is where the token saving comes from.
 
+## 0. Baseline, before any code
+
+Run the project's linter, type check and tests (commands from the instruction file, `package.json` scripts, `Makefile` or CI config). If anything already fails, fix it first: spawn one `Agent` with `model: "haiku"` per failing file or small group, briefed with the command, the exact errors and "fix only these errors, change no behaviour". Failures in security, auth, money or data code go to `sonnet` instead. Rerun to confirm a clean baseline. Two failed attempts, or a fix that would change behaviour: stop and tell the user. Report these fixes apart from the feature.
+
+Then start the app once (the project's dev command, in the background) so you know it boots and how to reach it. If it needs a login, ask the user now to create a dummy test account for Claude (a seeded user, a dev-only login, or test credentials added to the project's seed or example-config file, never `.env` and never their real password) so step 4 can run without them. Do not create accounts on third-party or production providers yourself.
+
 ## 1. Plan (Opus)
 
 **Unfamiliar feature? Look before you plan.** If neither this repo nor a well-known pattern already covers the feature (a sync engine, a rich-text editor, rate limiting, a CRDT, an OAuth flow you have not built), search GitHub first: `gh search repos` / `gh search code`, or a developer search tool. Pick 2–4 maintained open-source projects that solve it, and compare them in one short table: approach, key trade-off, licence, how well it fits this repo's stack. Recommend one approach and give the planner the table. Borrow ideas, not code: copy code only if the licence allows it, and keep its notice. Skip this for features the repo or the stack already shows how to build.
@@ -40,6 +46,8 @@ Context from earlier steps: <only what this step needs: new names, signatures, p
 ## 4. Verify
 
 Run the checklist's `check` command yourself (in the background if it may take over two minutes) and keep the last relevant lines. For `manual:` checks, say exactly what the user must look at; do not claim it works.
+
+**Run the app, always.** Start it and use the feature end to end: the `run` skill for launch patterns, the built-in browser for web pages, the simulator for mobile. Sign in with the dummy test account from step 0. If there is none, say so under **Not verified** and repeat the ask; never type the user's real credentials. Rerun the step-0 linter, type check and tests too.
 
 If it fails, give the failure to one builder call with the step it points at. Two failed fixes: stop and report.
 

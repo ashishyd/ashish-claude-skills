@@ -20,6 +20,8 @@ If the task grows while you work, say so and move up a size.
 
 ## The loop
 
+**0. Baseline, before any code.** Run the project's linter, type check and test suite (find the commands in the instruction file, `package.json` scripts, `Makefile` or CI config) and record the result. If anything already fails, fix it before starting the task: spawn one `Agent` with `model: "haiku"` per failing file or small group, briefed with the command, the exact errors and "fix only these errors, change no behaviour". Rerun the commands to confirm a clean baseline. Failures in security, auth, money or data code go to `sonnet` instead (see Model roles). If a pre-existing failure cannot be fixed in two attempts, or fixing it would change behaviour, stop and tell the user. Keep these fixes separate from the task's changes in the report.
+
 **1. Frame.** State the outcome in one sentence and name the check that proves it: a command that comes back pass or fail, or for UI, what should be visible on which page. If no check exists, the first piece of work is to create one (a failing test, a script, a fixture to diff against). If none is possible, say so now.
 
 **2. Explore, read-only.** Read the project's instruction file, the files the change touches, and one neighbouring feature that already does something similar. Then find everything the change reaches: callers, tests, types on the other side of an API, constants and enum siblings, translations, schema copies. List them.
@@ -31,7 +33,7 @@ If the task grows while you work, say so and move up a size.
 
 **4. Build in slices.** Each slice is small enough to check alone, and ends with the check being run. Follow the `coding-standards` skill. Stay inside the files listed in step 2; a new file on the list is a reason to tell the user.
 
-**5. Verify.** Run the check from step 1 plus the project's type check and linter on what changed. For UI work, open the page and look at it, including loading, empty and error states. Keep the command and the last lines of its output for the report.
+**5. Verify.** Run the check from step 1 plus the project's type check and linter on what changed. For a feature, always run the app and use the feature (see "Run the app" in the `new-feature` skill for the login rule). For UI work, open the page and look at it, including loading, empty and error states. Keep the command and the last lines of its output for the report.
 
 **6. Review.** Run the `standards-review` skill when the change touches auth, money, permissions, data or migrations, or is larger than about a hundred lines. Fix blockers and should-fix items. Leave nits unless asked.
 
