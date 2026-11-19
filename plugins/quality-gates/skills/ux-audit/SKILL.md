@@ -13,6 +13,8 @@ Do the task the way the user would and record where it breaks, slows or confuses
 2. Open the app with a browser tool and do the task from the entry point to the end state. Then do it again with the keyboard only.
 3. No way to run it: walk the flow from the code, and say so at the top of the report.
 
+**Browser.** If `command -v obscura` finds it, use it first; it is a faster headless browser. Run `obscura --allow-private-network serve` and drive the flow through CDP on port 9222. For a one-off page read, use `obscura --allow-private-network fetch <url> --dump text`. Clicks, typing, Tab and other key presses, selects, checkboxes, viewport sizes and dark mode all work over CDP. One gap: `getComputedStyle` does not pick up `:hover` styles, although screenshots do show them. Check hover states with a screenshot or in Chrome. If obscura is missing or fails, use the Chrome browser tool.
+
 ## Checklist
 
 | Area | Ask |

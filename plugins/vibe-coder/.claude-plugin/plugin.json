@@ -1,6 +1,6 @@
 {
   "name": "vibe-coder",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Day-to-day coding habits: Tailscale links instead of localhost for anything running on this machine, context-saving rules for every coding task, a hunter that finds implicit state machines and makes them explicit, a bug triager that only fixes bugs worth fixing, and an improve retro that scans past sessions for repeated mistakes and fixes their cause.",
   "author": {
     "name": "Ashish Yadav"

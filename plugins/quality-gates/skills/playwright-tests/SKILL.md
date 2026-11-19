@@ -11,7 +11,7 @@ An end-to-end test follows one user journey through the real app and asserts wha
 
 1. Read `playwright.config`: `baseURL`, `webServer`, `testDir`, `projects`, any setup project and `storageState`.
 2. Read the existing fixtures or page objects and one spec. Reuse them.
-3. Get real roles and names from the running page: use a browser tool to read the accessibility tree, or `npx playwright codegen <url>`. Do not guess selectors from source.
+3. Get real roles and names from the running page: use a browser tool to read the accessibility tree, or `npx playwright codegen <url>`. Do not guess selectors from source. Browser tool: if `command -v obscura` finds it, use it first (`obscura --allow-private-network fetch <url> --dump html`); otherwise use Chrome. The specs themselves still run on the project's own Playwright browsers. For a faster local loop you can also run them on obscura: start `obscura --allow-private-network serve --port 9222`, then override the `browser` fixture with `chromium.connectOverCDP('http://127.0.0.1:9222')`. This does not replace a Chromium run. Hover assertions such as `toHaveCSS` after `hover()` fail on obscura, and its rendering can differ, so the `--project=chromium` run below is still the one that counts.
 
 ## What to cover
 

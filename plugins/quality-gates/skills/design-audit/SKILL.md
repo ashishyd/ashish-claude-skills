@@ -13,6 +13,8 @@ Judge the rendered screen, not the code. Measure against the project's own desig
 2. Trigger each state: hover, focus, active, disabled, loading, empty, error, long text.
 3. No way to render it: audit from code, and say so at the top of the report.
 
+**Browser.** If `command -v obscura` finds it, use it first; it is a faster headless browser. `obscura --allow-private-network fetch <url> -s shot.png` takes a screenshot, `--dump html|text` reads the page, and `--eval '<js>'` runs a script. For viewport sizes, dark mode and hover, run `obscura --allow-private-network serve` and drive it through CDP on port 9222. Its rendering can differ from Chromium, so recheck any visual defect in Chrome before you report it. If obscura is missing or fails, use the Chrome browser tool.
+
 ## Order of authority
 
 1. The repo's design system: `DESIGN.md`, tokens, Tailwind theme, CSS variables, component library.

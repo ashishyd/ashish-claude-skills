@@ -56,6 +56,8 @@ Install it from inside Claude Code (2.1.275 or later):
 
 On older versions, run `/plugin marketplace add ashishyd/ashish-claude-skills` first, then `/plugin install quality-gates@ashish-claude-skills`. The hook needs `python3` on the PATH.
 
+**Optional: [obscura](https://github.com/h4ckf0r0day/obscura).** The skills that open pages (`design-audit`, `ux-audit`, `playwright-tests`, feature-flow's `new-feature` and vibe-coder's `tailscale-links`) use obscura first if it is on the PATH. It is a headless browser written in Rust and faster than Chrome. They run it with `--allow-private-network` because obscura blocks localhost by default. Without obscura, they use the Chrome browser tool. Install it from the release binaries or with `cargo`.
+
 ## feature-flow plugin
 
 A plugin in `plugins/feature-flow/` that runs every new-feature request the same way:

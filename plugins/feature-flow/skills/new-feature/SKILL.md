@@ -47,7 +47,7 @@ Context from earlier steps: <only what this step needs: new names, signatures, p
 
 Run the checklist's `check` command yourself (in the background if it may take over two minutes) and keep the last relevant lines. For `manual:` checks, say exactly what the user must look at; do not claim it works.
 
-**Run the app, always.** Start it and use the feature end to end: the `run` skill for launch patterns, the built-in browser for web pages, the simulator for mobile. Sign in with the dummy test account from step 0. If there is none, say so under **Not verified** and repeat the ask; never type the user's real credentials. Rerun the step-0 linter, type check and tests too.
+**Run the app, always.** Start it and use the feature end to end: the `run` skill for launch patterns, for web pages obscura if `command -v obscura` finds it (`obscura --allow-private-network fetch <url> --dump text`, `-s shot.png`, or `serve` for CDP on port 9222), otherwise the Chrome browser tool, the simulator for mobile. Sign in with the dummy test account from step 0. If there is none, say so under **Not verified** and repeat the ask; never type the user's real credentials. Rerun the step-0 linter, type check and tests too.
 
 If it fails, give the failure to one builder call with the step it points at. Two failed fixes: stop and report.
 

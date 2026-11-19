@@ -26,7 +26,7 @@ The user works across several computers and a phone. `localhost` only means some
 
 3. **Open it yourself.** The link is `https://<DNSName>:<port>/<path>`.
    - `curl -sS -m 15 -o /dev/null -w "%{http_code}" <link>` must print 200 (or the page's normal redirect). Then confirm the body is the thing you meant to publish, not an error page.
-   - For anything visual, also load it in the browser tool and look.
+   - For anything visual, also load it in a browser and look. If `command -v obscura` finds it, use `obscura --allow-private-network fetch <link> -s shot.png` and read the PNG; otherwise use the Chrome browser tool.
    - 403 or "blocked host" from a dev server (Vite `allowedHosts`, webpack `allowedHosts`, Next `allowedDevOrigins`): add the DNSName to the server's allow list. That is a small config change; say you made it.
    - It must work through the Tailscale hostname, not only on localhost. If it does not, say what you saw. Do not send a link you have not opened.
 
