@@ -1,13 +1,48 @@
 ---
 name: security-code-audit
-description: Use when code touching auth, sessions, tokens, permissions, user input, database queries, file uploads, webhooks, payments, secrets or a new API route has just been written or changed, or when the user asks for a security review of a diff, a file or a feature.
+description: Use when writing, changing or reviewing code that handles user input, forms, auth, passwords, sessions, tokens, API keys, secrets, env vars, permissions, database queries, file uploads, webhooks, payments or a new API route, or when the user asks for a security review of a diff, a file or a feature.
 ---
 
 # Security Code Audit
 
+When writing code, follow **Rules when writing**. When reviewing, run **Steps**.
+
+## Rules when writing
+
+### Input: everything a user, client, webhook, file, URL or model sends
+- Validate on the server at the boundary with the repo's schema library (zod, valibot, pydantic, ...): type, length, range, format. Allowlist; never denylist. Client-side checks are UX only.
+- Pick the fields you accept. Never spread a request body into a create or update (`role`, `ownerId`, `price`, `isAdmin` arrive that way).
+- Treat every id as hostile: load rows through the caller's scope (`where id = ? and owner_id = session.userId`), never by id alone.
+- Queries use parameters or the ORM's bindings. Shell commands use an argument array, never a shell string. File paths resolve and then must stay under a fixed base dir. Escape any input used in a regex.
+- Never `eval`, `new Function`, `pickle`, `yaml.load` (use `safe_load`) or deserialise class instances from input.
+- Let the framework escape output. Raw HTML only through a sanitiser (DOMPurify). Redirect only to relative paths or an allowlist of hosts.
+- Cap sizes: body, upload, array length, page size, string length. Set timeouts on outbound calls.
+- Error responses carry a generic message; the details go to the server log.
+
+### Secrets: passwords, API keys, tokens, connection strings, private keys
+- Never in source, tests, fixtures, seed data, docs, comments, commit messages or URLs. Read them from env or the secret manager the repo already uses.
+- Add each new name to `.env.example` with an empty value, and check `.env*` (except `.env.example`) is in `.gitignore`.
+- No fallback values: `process.env.JWT_SECRET || "dev-secret"` ships the fallback to production. Fail at startup when a required secret is missing.
+- Server-only: nothing secret behind `NEXT_PUBLIC_`, `VITE_`, `EXPO_PUBLIC_`, `REACT_APP_`, or in any file the client imports. Service-role and admin keys never leave the server.
+- Never log secrets, passwords, `Authorization` or `Cookie` headers, full request bodies or tokens. Redact before logging.
+- Found a real secret in code or git history? Stop and tell the user: it is leaked and must be rotated, and deleting it from the file is not enough. Do not rewrite history unasked, and do not echo the value.
+
+### Passwords, login, sessions and permissions
+- Follow `login-and-access`: who signs in, how long they stay in, and what each person can see.
+- Generate any token with a CSPRNG (`crypto.randomBytes(32)`, `secrets.token_urlsafe(32)`), never `Math.random` or `uuid` v1. Compare secrets with a constant-time compare.
+- On an error inside an auth or permission check, deny.
+
+### Safe defaults
+- Cookies: `HttpOnly`, `Secure`, `SameSite=Lax` or stricter.
+- Never turn off TLS verification (`verify=False`, `rejectUnauthorized: false`, `NODE_TLS_REJECT_UNAUTHORIZED=0`).
+- Least privilege for DB users, API key scopes and cloud roles. Enable row-level security on tables the client can reach.
+- Add a dependency only when needed, through the lockfile, after checking the exact name (typosquats).
+
+## Review
+
 Audit the change, not the whole repository. Follow each piece of untrusted input from where it enters to where it is used. A finding needs a concrete attacker, action and gain; without one it is hardening advice.
 
-For a whole-codebase audit or pen test, use a full audit skill (`security-audit`) if one is installed.
+For planning before launch (attack surface, launch checklist, pen test scope), use `threat-model`. For a whole-codebase audit or pen test, use a full audit skill (`security-audit`) if one is installed.
 
 ## Steps
 
@@ -15,7 +50,7 @@ For a whole-codebase audit or pen test, use a full audit skill (`security-audit`
 2. **Map.** List each entry point touched (route, action, job, webhook, CLI) with who can call it and what they control.
 3. **Trace.** Follow every controlled value to its sinks: query, shell, filesystem, HTML, redirect, outbound request, log, model prompt.
 4. **Check** against the table.
-5. **Tools.** Run what the repo already has (`npm audit`, `pnpm audit`, `pip-audit`, semgrep, gitleaks). Do not install tools.
+5. **Tools.** Run what the repo already has (`npm audit`, `pnpm audit`, `pip-audit`, semgrep, gitleaks). Do not install tools. With no secret scanner, grep the added lines: `git diff HEAD -U0 | grep -nEi '^\+.*(api[_-]?key|secret|passw|token|bearer|BEGIN [A-Z ]*PRIVATE KEY|AKIA[0-9A-Z]{16}|sk_live_|ghp_|xox[bp]-)'`, then read each hit (most are names, not values).
 6. **Report.**
 
 ## Checklist
@@ -28,7 +63,7 @@ For a whole-codebase audit or pen test, use a full audit skill (`security-audit`
 | Input | Schema validation at the boundary, with size limits? Does the handler accept fields the user must not set (role, owner id, price)? |
 | Output | Raw HTML (`dangerouslySetInnerHTML`, `v-html`, `innerHTML`)? `href` or redirect target taken from input? |
 | Server-side requests | Does the server fetch a URL the user supplies? Are internal addresses blocked? |
-| Secrets | Hard-coded, logged, returned in an error, or shipped to the browser (`NEXT_PUBLIC_`, `VITE_`)? |
+| Secrets | Hard-coded, logged, returned in an error, or shipped to the browser (`NEXT_PUBLIC_`, `VITE_`)? A fallback default (`\|\| "dev-secret"`)? New name missing from `.env.example`? |
 | Crypto | `Math.random` for tokens? Fast hash for passwords? `===` on secrets instead of a constant-time compare? Home-made schemes? |
 | Browser | Cookie flags (`HttpOnly`, `Secure`, `SameSite`)? CSRF on state-changing cookie-auth routes? CORS reflecting any origin with credentials? |
 | Files | Upload type, size and name checked on the server? Stored outside the web root? Path built from input? |

@@ -35,16 +35,20 @@ These tools are for research and planning. They are not financial advice. Tradin
 
 ## quality-gates plugin
 
-A plugin in `plugins/quality-gates/` with six short skills and one hook.
+A plugin in `plugins/quality-gates/` with ten short skills and one hook.
 
 | Skill | When Claude uses it |
 |-------|---------------------|
 | `typescript-types` | Writing or changing TypeScript, or fixing a type error. |
 | `vitest-tests` | Writing or fixing unit and component tests with Vitest. |
 | `playwright-tests` | Writing or fixing Playwright end-to-end tests. |
-| `security-code-audit` | Code touching auth, input, queries, uploads, webhooks or secrets was just changed. |
+| `security-code-audit` | Code touching auth, input, queries, uploads, webhooks or secrets is being written or was just changed. Writing rules for input validation, keeping secrets out of code, password hashing and safe defaults, plus a diff review. |
+| `login-and-access` | Sign-in, sessions, roles or permissions are being written or changed. Rules for who signs in, how long they stay in and what each person can see, an access matrix review, and the tests every protected route needs. |
+| `personal-data` | Code stores, sends, logs, exports or deletes information about people. Rules for what is kept and why, how it is processed and shared, when it is deleted, and how rules change by country (GDPR, CCPA, LGPD, DPDP and more), with a data-map review. Flags legal questions; does not answer them. |
+| `threat-model` | Planning a feature or integration, getting ready to launch, or changing deploy, infra or CI config. Maps where someone could break in (STRIDE at each trust boundary, abuse cases), a launch checklist, automated scans and a penetration test plan. Runs scans only against localhost, or a staging host you name. |
 | `design-audit` | A UI component or page was just built or changed: how it looks. |
 | `ux-audit` | A user-facing flow was just built or changed: how it works, including accessibility. |
+| `claude-md-sync` | A change touched business logic, data model, API, architecture or commands, so CLAUDE.md may need a line. |
 
 The hook runs after each file edit and names the skill that fits the file (by extension and path), once per skill per session. Nothing is added to context for other files, and a skill's body is read only when Claude loads it.
 

@@ -25,6 +25,22 @@ CODE_RULES = [
     ("security-code-audit",
      r"auth|login|session|token|passw|crypt|secret|webhook|upload|payment"
      r"|middleware|(^|/)api/|(^|/)route\.|\.sql$"),
+    ("login-and-access",
+     r"auth|login|logout|sign-?in|sign-?up|session|passw|oauth|sso|saml|jwt"
+     r"|mfa|passkey|permission|polic|(^|/|_|-)roles?\b|rbac|acl|middleware"
+     r"|tenant|admin"),
+    # shortcut: path words again; a personal field added to a plainly named
+    # model is missed until content matching exists.
+    ("personal-data",
+     r"(^|/)(models?|entities|migrations?|schemas?)/|\.sql$|\.prisma$|schema\."
+     r"|user|customer|profile|account|contact|consent|privacy|gdpr|retention"
+     r"|analytics|tracking|telemetry|export|patient"),
+    # Deploy, infra and CI config decide what is exposed, so they get the threat model.
+    ("threat-model",
+     r"(^|/)dockerfile|docker-compose|(^|/)compose\.ya?ml$|\.tf$"
+     r"|(^|/)(terraform|infra|k8s|kubernetes|helm|deploy)/|\.github/workflows/"
+     r"|nginx|serverless\.|vercel\.json$|netlify\.toml$|fly\.toml$"
+     r"|next\.config\.|openapi|swagger|security\.txt$"),
     ("design-audit", UI),
     ("ux-audit", UI),
     # shortcut: any source edit counts as "may change business logic"; the skill
@@ -37,8 +53,15 @@ HINTS = {
     "vitest-tests": "load `{0}vitest-tests` before more test edits "
                     "(a Playwright spec? use `{0}playwright-tests`)",
     "playwright-tests": "load `{0}playwright-tests` before more e2e edits",
-    "security-code-audit": "before calling this work done, run "
-                           "`{0}security-code-audit` on the diff",
+    "security-code-audit": "load `{0}security-code-audit` and follow its "
+                           "writing rules (input, secrets, passwords); run "
+                           "its review on the diff before calling this done",
+    "login-and-access": "follow `{0}login-and-access` for sign-in, "
+                        "sessions and who may see what",
+    "personal-data": "follow `{0}personal-data` for what is kept about "
+                     "people, where it goes and when it is deleted",
+    "threat-model": "this changes what is exposed; before launch or a new "
+                    "entry point, run `{0}threat-model`",
     "design-audit": "before calling this UI work done, run `{0}design-audit`",
     "ux-audit": "and `{0}ux-audit`",
     "claude-md-sync": "if this changes business logic, data model, API, "

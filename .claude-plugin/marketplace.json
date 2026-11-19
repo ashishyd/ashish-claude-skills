@@ -8,7 +8,7 @@
     {
       "name": "quality-gates",
       "source": "./plugins/quality-gates",
-      "description": "TypeScript types, Vitest and Playwright tests, security, design and UX audits, and CLAUDE.md sync, routed by a hook to the file being edited."
+      "description": "TypeScript types, Vitest and Playwright tests, security, login and access, personal data and privacy, threat modelling before launch, design and UX audits, and CLAUDE.md sync, routed by a hook to the file being edited."
     },
     {
       "name": "confluence-diagrams",

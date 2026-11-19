@@ -1,8 +1,8 @@
 {
   "name": "quality-gates",
-  "version": "0.4.1",
-  "description": "Seven short skills for TypeScript types, Vitest and Playwright tests, security, design and UX audits, and keeping CLAUDE.md in sync with code changes, with a hook that names the right one for the file being edited, once per session.",
+  "version": "0.8.0",
+  "description": "Ten short skills for TypeScript types, Vitest and Playwright tests, security, login and access, personal data and privacy, threat modelling before launch, design and UX audits, and keeping CLAUDE.md in sync with code changes, with a hook that names the right one for the file being edited, once per session.",
   "author": { "name": "Ashish Yadav" },
   "license": "MIT",
-  "keywords": ["typescript", "vitest", "playwright", "security", "design", "ux", "audit", "claude-md"]
+  "keywords": ["typescript", "vitest", "playwright", "security", "auth", "privacy", "gdpr", "threat-model", "pentest", "design", "ux", "audit", "claude-md"]
 }
