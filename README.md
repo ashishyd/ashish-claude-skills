@@ -85,7 +85,7 @@ Install it with `/plugin install feature-flow --marketplace ashishyd/ashish-clau
 
 ## vibe-coder plugin
 
-A plugin in `plugins/vibe-coder/` with five skills and one hook.
+A plugin in `plugins/vibe-coder/` with seven skills and one hook.
 
 **Hook `trim_output.py` (PreToolUse, Bash):** noisy commands (installs, builds, test runs, `docker build`, `make`) with no pipe or redirect of their own are rewritten to pipe through a trimmer with `pipefail`, so the exit code is kept. It keeps the first 30 and last 80 lines, up to 60 error or warning lines in between, and collapses repeated lines. Add `# no-trim` to a command, or set `CLAUDE_NO_TRIM=1`, to see everything. It sets no permission decision, so your permission prompts are unchanged.
 
@@ -96,6 +96,8 @@ A plugin in `plugins/vibe-coder/` with five skills and one hook.
 | `state-machine-hunter` | Finds implicit state machines (boolean soup, string statuses, step counters, null-as-loading), reports them ranked by user harm with the impossible states each allows, then on your yes makes one explicit at a time (discriminated union, reducer or enum + transition table in the repo's own idiom) behind pinned tests, keeping external shapes unchanged. |
 | `bug-triager` | Scores each bug 1-10 on frequency and severity. A product below 5 is drafted as an issue (filed on your yes) and the code is left alone; 5 or more gets a root-cause fix with a test. Data-loss, security and money bugs are always raised. No code for rare or future cases nobody asked about. |
 | `improve` | A retro over this project's past sessions. `scripts/session_digest.py` reads the local transcripts and prints only friction (your corrections, denied tool calls, interrupts, repeated tool errors) with the context before each. Claude groups them into patterns (two or more moments), proposes one fix per pattern in the right home (edit an existing rule, a hook plan, a skill lesson, repo `CLAUDE.md`, then `~/.claude/CLAUDE.md` last), and applies only the cards you accept. A run log outside the repo records what was scanned and what you rejected, so nothing is re-proposed. |
+| `launch-ready` | For a vibe-coded site about to go live. Takes before screenshots, then sends five read-only subagents in parallel, one per group (consistent design, mobile, every state, real-user flows, launch details), to check 20 things. A group's effort goes up when it is the complex one. You get one numbered issue list and nothing changes until you approve it. Claude then writes DESIGN.md and fixes everything itself in one pass (so no two agents edit the same file), rechecks each fix, and sends before-and-after screenshots. |
+| `launch-safe` | The backend half of `launch-ready`. Five read-only subagents check 25 things behind the pages: keys and access, billing abuse, payments, monitoring and launch day. Keys and payments run at high effort, the rest at medium. Secrets are reported by location only, never by value. The issue list comes in three parts: code Claude fixes, dashboard steps for you (rotate keys, 2FA, spending caps, live webhook secret), and numbers only you can set (caps, rate limits, AI calls per day). Nothing changes until you approve. Claude then fixes the code in one pass with a test per new guard. It never rewrites git history, never touches the production database, and tests payments in test mode only. |
 
 Install it with `/plugin install vibe-coder --marketplace ashishyd/ashish-claude-skills`.
 

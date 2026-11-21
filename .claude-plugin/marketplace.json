@@ -33,7 +33,7 @@
     {
       "name": "vibe-coder",
       "source": "./plugins/vibe-coder",
-      "description": "Tailscale links instead of localhost for anything running on this machine, and context-saving rules for every coding task, and an improve retro that learns from past sessions' mistakes. Plus a hook that trims noisy install, build and test output."
+      "description": "Tailscale links instead of localhost for anything running on this machine, and context-saving rules for every coding task, and an improve retro that learns from past sessions' mistakes, and launch-ready / launch-safe pre-launch checks for the pages and the backend. Plus a hook that trims noisy install, build and test output."
     },
     {
       "name": "pr-review",
