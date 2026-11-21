@@ -15,6 +15,8 @@ CASES = {
     "I want a feature that emails weekly reports": True,
     "build a new settings page for notifications": True,
     "implement the dark mode feature": True,
+    "plan the CSV export feature": True,
+    "plan a new onboarding flow": True,
     "feature request: bulk delete for admins": False,  # "delete" reads as removal
     "new feature: bulk archive for admins": True,
     "fix the bug in the export feature": False,
@@ -36,7 +38,8 @@ def run(script, payload):
 
 
 out = json.loads(run("detect_feature.py", {"prompt": "add a new feature for CSV export"}))
-assert "feature-flow:new-feature" in out["hookSpecificOutput"]["additionalContext"]
+hint = out["hookSpecificOutput"]["additionalContext"]
+assert "feature-flow:new-feature" in hint and "instead of superpowers:writing-plans" in hint
 assert run("detect_feature.py", {"prompt": "fix the typo"}) == ""
 assert run("detect_feature.py", {}) == ""  # bad input: silent, exit 0
 

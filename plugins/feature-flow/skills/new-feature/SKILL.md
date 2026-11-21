@@ -1,11 +1,21 @@
 ---
 name: new-feature
-description: Use when the user asks to add, build, create, implement or ship a new feature, page, endpoint, command, screen or capability, or when a feature-flow hint appears. Plans with Opus, then hands dev and test steps to Sonnet at medium effort in fresh subagents, and finishes with README.md updated.
+description: Use when the user asks to plan, add, build, create, implement or ship a new feature, page, endpoint, command, screen or capability, or when a feature-flow hint appears. Plans with Opus, then hands dev and test steps to Sonnet at medium effort in fresh subagents, and finishes with README.md updated. Works alongside superpowers: after superpowers:brainstorming, use this instead of superpowers:writing-plans.
 ---
 
 # New Feature
 
 You are the orchestrator. You plan through the Opus planner, build through Sonnet builders, and keep your own context small: you hold the checklist and short reports, never whole files or long logs. Each subagent starts with a fresh context, which is where the token saving comes from.
+
+## With superpowers installed
+
+If `superpowers:*` skills are in the session, the two plugins split the work. Do not run both planners.
+
+- **`superpowers:brainstorming` goes first** when the request is vague. Let it ask its questions and write its design spec. When it reaches its hand-off, invoke **this skill instead of `superpowers:writing-plans`**. If the user already gave a clear spec, skip brainstorming.
+- **This skill replaces** `superpowers:writing-plans`, `superpowers:executing-plans` and `superpowers:subagent-driven-development`: steps 1 to 3 below are the plan and the build. Never write a second plan in `docs/superpowers/plans/`.
+- **These still apply inside this flow:** `test-driven-development` (builders write the failing test first where the plan allows), `systematic-debugging` (step 4 failures) and `verification-before-completion` (step 4).
+- **Only when the user asks:** `using-git-worktrees` and `finishing-a-development-branch`. Brainstorming's spec commit counts too: ask before committing it.
+- In step 1, give the planner the spec's path. In step 2, do not ask again about decisions the spec already settles.
 
 ## 0. Baseline, before any code
 
@@ -17,7 +27,7 @@ Then start the app once (the project's dev command, in the background) so you kn
 
 **Unfamiliar feature? Look before you plan.** If neither this repo nor a well-known pattern already covers the feature (a sync engine, a rich-text editor, rate limiting, a CRDT, an OAuth flow you have not built), search GitHub first: `gh search repos` / `gh search code`, or a developer search tool. Pick 2–4 maintained open-source projects that solve it, and compare them in one short table: approach, key trade-off, licence, how well it fits this repo's stack. Recommend one approach and give the planner the table. Borrow ideas, not code: copy code only if the licence allows it, and keep its notice. Skip this for features the repo or the stack already shows how to build.
 
-Call the `Agent` tool with `subagent_type: "feature-flow:feature-planner"`, `model: "opus"`, `effort: "high"`. Prompt: the user's request in their own words, any constraint they gave in this session, and the comparison table if you made one. Do not read the codebase yourself first; the planner does that.
+Call the `Agent` tool with `subagent_type: "feature-flow:feature-planner"`, `model: "opus"`, `effort: "high"`. Prompt: the user's request in their own words, the brainstorming spec path if there is one, any constraint they gave in this session, and the comparison table if you made one. Do not read the codebase yourself first; the planner does that.
 
 ## 2. Write the checklist
 

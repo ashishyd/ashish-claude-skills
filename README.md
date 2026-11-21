@@ -79,6 +79,8 @@ Every agent runs as a subagent with a fresh context, so your main session holds 
 | `UserPromptSubmit` hook | Spots feature requests ("add a new feature...", "build a new page...") and points Claude at `new-feature`. Bug fixes, reviews, renames and feature flags are left alone. |
 | `Stop` hook | While a checklist says `status: in-progress`, blocks the turn from ending if code changed and README.md did not. Set `status: done` or `status: abandoned` to release it. It blocks at most once per turn and lets the turn end on any error. |
 
+**With superpowers.** If superpowers is installed, `superpowers:brainstorming` can still run first to design the feature. It then hands off to `new-feature` instead of `superpowers:writing-plans`, so you get one plan, not two.
+
 Install it with `/plugin install feature-flow --marketplace ashishyd/ashish-claude-skills`. The hooks need `python3` on the PATH. Self-test: `python3 plugins/feature-flow/hooks/test_hooks.py`.
 
 ## vibe-coder plugin

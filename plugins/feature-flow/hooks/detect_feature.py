@@ -7,7 +7,7 @@ import json
 import re
 import sys
 
-VERB = r"(add|build|create|implement|develop|make|introduce|ship|support|need|want)"
+VERB = r"(plan|add|build|create|implement|develop|make|introduce|ship|support|need|want)"
 # shortcut: keyword rules miss features asked for without these words ("let users
 # export CSV"); widen FEATURE or add a phrase list if that proves common.
 FEATURE = re.compile(
@@ -20,7 +20,10 @@ NOT_FEATURE = re.compile(
 
 HINT = ("feature-flow: this is a new-feature request. Load `feature-flow:new-feature` "
         "and follow it: Opus planner -> checklist in .claude/features/ -> Sonnet "
-        "(medium effort) builder subagents -> README.md update.")
+        "(medium effort) builder subagents -> README.md update. If superpowers is "
+        "installed: superpowers:brainstorming may run first for design, then hand "
+        "off to feature-flow:new-feature instead of superpowers:writing-plans; do "
+        "not run writing-plans, executing-plans or subagent-driven-development.")
 
 
 def is_feature(prompt):
