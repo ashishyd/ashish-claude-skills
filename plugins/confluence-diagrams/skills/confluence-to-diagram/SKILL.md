@@ -1,6 +1,6 @@
 ---
 name: confluence-to-diagram
-description: Use when the user gives a Confluence page URL, page ID, pasted page or exported HTML or Markdown and wants it drawn, visualized or explained as a diagram: a process, runbook, design doc, state model, data model, incident review or release history.
+description: "Use when the user gives a Confluence page URL, page ID, pasted page or exported HTML or Markdown and wants it drawn, visualized or explained as a diagram: a process, runbook, design doc, state model, data model, incident review or release history."
 ---
 
 # Confluence to Diagram
