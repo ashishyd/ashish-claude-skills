@@ -48,7 +48,7 @@
     {
       "name": "vibe-coder",
       "source": "./plugins/vibe-coder",
-      "description": "Day-to-day coding habits: Tailscale links instead of localhost for anything running on this machine, context-saving rules for every coding task, a hunter that finds implicit state machines and makes them explicit, a bug triager that only fixes bugs worth fixing, and two pre-launch checks for vibe-coded sites (launch-ready for the pages, launch-safe for keys, billing abuse, payments, monitoring and launch day), each auditing with five read-only subagents and fixing the approved issues in one pass. Add vibe-coder-local for the improve retro and the output-trimming hook."
+      "description": "Everyday coding habits and pre-launch checks: private preview links, context-saving rules, explicit state machines, bug triage, and front-end and back-end audits before a site goes live. Add vibe-coder-local for the improve retro and the output-trimming hook."
     },
     {
       "name": "vibe-coder-local",
