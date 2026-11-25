@@ -23,7 +23,7 @@
     {
       "name": "switchboard",
       "source": "./plugins/switchboard",
-      "description": "Suggests the cheapest Claude model and effort level that fits each prompt, from a UserPromptSubmit hook that stays quiet when the current model already fits."
+      "description": "Routes each prompt to the cheapest Claude model and effort level that fits it, from a UserPromptSubmit hook that runs it in a subagent with that model and effort when the current setting does not fit."
     },
     {
       "name": "feature-flow",

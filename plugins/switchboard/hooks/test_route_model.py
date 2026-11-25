@@ -7,7 +7,7 @@ import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from route_model import classify, fits  # noqa: E402
+from route_model import classify, fits, worth_routing  # noqa: E402
 
 CASES = {
     "what does git rebase --onto do?": "haiku",
@@ -33,6 +33,17 @@ assert not fits("opus", "claude-opus-5-5", "low")
 assert not fits("haiku", "claude-opus-5-5", "high")
 assert not fits("sonnet", None, None)
 
+CODE, GEN, LOOK = "a routine code change", "general work", "a quick question or lookup"
+assert worth_routing("opus", "x", "claude-sonnet-5-5", "medium"), "step up model: route"
+assert worth_routing("opus", "x", "claude-opus-5-5", "low"), "step up effort: route"
+assert not worth_routing("opus", "x", "claude-opus-5-5", "max"), "effort step-down: inline"
+assert worth_routing("sonnet", CODE, "claude-opus-5-5", "high"), "code work down: route"
+assert not worth_routing("sonnet", GEN, "claude-opus-5-5", "high"), "chat down: inline"
+assert not worth_routing("haiku", LOOK, "claude-opus-5-5", "high"), "lookup down: inline"
+assert not worth_routing("haiku", LOOK, None, None), "lookup, unknown model: inline"
+assert worth_routing("sonnet", CODE, None, None), "unknown model: route with skip clause"
+assert not worth_routing("opus", "x", "claude-fable-5-2", "high"), "never down from Fable for hard work"
+
 
 def run(payload):
     out = subprocess.run([sys.executable, os.path.join(HERE, "route_model.py")],
@@ -41,29 +52,29 @@ def run(payload):
     return out.stdout
 
 
-sid = "selfcheck%d" % os.getpid()
-state = os.path.join(tempfile.gettempdir(), "switchboard-" + sid)
 with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False) as t:
     t.write(json.dumps({"message": {"model": "claude-opus-5-5"}, "effort": "high"}) + "\n")
 try:
-    ask = lambda p: json.dumps({"session_id": sid, "prompt": p, "transcript_path": t.name})
-    out = json.loads(run(ask("what does HEAD~2 mean in git?")))["hookSpecificOutput"]
+    ask = lambda p: json.dumps({"session_id": "selfcheck", "prompt": p, "transcript_path": t.name})
+    ctx_of = lambda p: (json.loads(run(ask(p)) or "{}").get("hookSpecificOutput") or {}).get(
+        "additionalContext", "")
+    assert run(ask("what does HEAD~2 mean in git?")) == "", "lookup on Opus: answer inline"
+    out = json.loads(run(ask("add a test for the parser in parse.py")))["hookSpecificOutput"]
     assert out["hookEventName"] == "UserPromptSubmit"
     ctx = out["additionalContext"]
-    assert "claude-haiku-5-5" in ctx and "/effort low" in ctx and "claude-opus-5-5" in ctx, ctx
-    assert len(ctx) < 400, "context must stay short"
-    assert run(ask("where is HEAD stored in git?")) == "", "same advice twice must be silent"
+    assert 'model "sonnet"' in ctx and 'effort "medium"' in ctx and "Agent tool" in ctx, ctx
+    assert "claude-opus-5-5" in ctx, "must name the current setting"
+    assert len(ctx) < 600, "context must stay short"
+    assert 'model "sonnet"' in ctx_of(("fix the typo in the README heading")), \
+        "every prompt worth routing must be routed, not just the first"
     assert run(ask("design the system for audit logs with trade-offs")) == "", \
         "already on Opus high: must be silent"
-    assert "Sonnet" in run(ask("add a test for the parser in parse.py"))
     with open(t.name, "a") as f:
         f.write(json.dumps({"effort": "low"}) + "\n")
-    up = run(ask("find the root cause of the deadlock in the job queue"))
-    assert "/effort high" in up and "/model" not in up and "better result" in up, up
+    up = ctx_of(("find the root cause of the deadlock in the job queue"))
+    assert 'model "opus"' in up and 'effort "high"' in up and "better result" in up, up
     assert run("not json") == "", "bad input must be silent"
     assert run(json.dumps({"prompt": 42})) == "", "odd input must be silent"
 finally:
     os.remove(t.name)
-    if os.path.exists(state):
-        os.remove(state)
-print("ok: %d prompt cases, fit check, transcript model, dedupe, bad input" % len(CASES))
+print("ok: %d prompt cases, fit check, cost gate, transcript model, routing, bad input" % len(CASES))

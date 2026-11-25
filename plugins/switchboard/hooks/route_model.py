@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""UserPromptSubmit hook: suggest a Claude model and effort level for this prompt.
+"""UserPromptSubmit hook: route this prompt to the Claude model and effort that fit it.
 
 Reads the hook JSON on stdin. Classifies the prompt with cheap keyword rules,
 reads the current model and effort from the end of the session transcript (the
-hook input carries neither), and prints a one-line additionalContext only when
-the current setting does not fit and the suggestion differs from the last one in
-this session. Suggests only; never switches. Never blocks or fails.
+hook input carries neither), and when the current setting does not fit, prints a
+short additionalContext telling the main agent to run the prompt in an Agent
+subagent with the chosen model and effort. A hook cannot spawn the subagent
+itself, so the main agent does. Never blocks or fails.
 """
 import json
 import os
 import re
 import sys
-import tempfile
 
 MODELS = {  # tier -> (family, display, id, effort)
     "haiku": ("haiku", "Haiku 5.5", "claude-haiku-5-5", "low"),
@@ -36,6 +36,9 @@ QUESTION = re.compile(
 ACK = re.compile(r"^((y(es|ep)?|no|ok(ay)?|sure|go( ahead)?|continue|thanks?( you)?"
                  r"|do it|lgtm|done|next|please)[.,! ]*)+$", re.I)
 TAIL_BYTES = 256 * 1024
+RANK = {"haiku": 0, "sonnet": 1, "opus": 2, "fable": 3}
+EFFORTS = ["low", "medium", "high", "xhigh", "max"]
+CODE_REASON = "a routine code change"
 
 
 def classify(prompt):
@@ -46,7 +49,7 @@ def classify(prompt):
     if OPUS.search(p):
         return "opus", "architecture, security, hard debugging or a large refactor"
     if CODE.search(p) or len(p) > 1500:
-        return "sonnet", "a routine code change"
+        return "sonnet", CODE_REASON
     if QUESTION.match(p) and len(p) <= 200:
         return "haiku", "a quick question or lookup"
     return "sonnet", "general work"
@@ -77,16 +80,31 @@ def fits(tier, model, effort):
     return bool(model) and family in model and effort in (None, want)
 
 
+def worth_routing(tier, reason, model, effort):
+    """Route up always (quality); route down only when the saving beats a cold subagent."""
+    if not model:
+        return tier != "haiku"  # unknown setting: the hint tells the agent to skip if it fits
+    have = next((RANK[f] for f in RANK if f in model), None)
+    want = RANK[tier]
+    if have is None or want > have:
+        return True
+    if want == have:  # same model: only an effort step-up is worth a spawn
+        return effort in EFFORTS and EFFORTS.index(MODELS[tier][3]) > EFFORTS.index(effort)
+    # shortcut: step-down guessed from the prompt type, not measured tokens; tune if spawns cost more
+    return reason == CODE_REASON
+
+
 def hint(tier, reason, model, effort):
-    family, name, mid, eff = MODELS[tier]
+    family, name, _, eff = MODELS[tier]
     now = " You are on %s%s." % (model, ", effort " + effort if effort else "") if model else ""
     why = "a better result" if tier == "opus" else "fewer tokens"
-    switch = "`/effort %s`" % eff
-    if not (model and family in model):
-        switch = "`/model %s` and %s, or the model picker" % (family, switch)
-    return ("switchboard: this looks like %s; %s (`%s`) at effort %s fits for %s.%s "
-            "To switch: %s. Suggestion only; mention it to the user in one line "
-            "and carry on." % (reason, name, mid, eff, why, now, switch))
+    return ("switchboard: this looks like %s; %s at effort %s fits for %s.%s "
+            "Route it: call the Agent tool with model \"%s\", effort \"%s\", "
+            "subagent_type \"general-purpose\" and a complete brief (this prompt plus "
+            "the context from this conversation it needs; ask before commit, push, "
+            "delete or deploy). Relay its result; do not redo the work. Skip routing if "
+            "you are already on %s at effort %s, or the prompt only needs this "
+            "conversation." % (reason, name, eff, why, now, family, eff, name, eff))
 
 
 def main():
@@ -95,18 +113,8 @@ def main():
     if not tier:
         return
     model, effort = current_setting(data)
-    if fits(tier, model, effort):
+    if fits(tier, model, effort) or not worth_routing(tier, reason, model, effort):
         return
-    session = re.sub(r"\W", "", str(data.get("session_id", "")))
-    state = os.path.join(tempfile.gettempdir(), "switchboard-" + session)
-    try:
-        with open(state) as f:
-            if f.read().strip() == tier:
-                return  # same advice as last prompt: do not nag
-    except OSError:
-        pass
-    with open(state, "w") as f:
-        f.write(tier)
     print(json.dumps({"hookSpecificOutput": {
         "hookEventName": "UserPromptSubmit",
         "additionalContext": hint(tier, reason, model, effort)}}))

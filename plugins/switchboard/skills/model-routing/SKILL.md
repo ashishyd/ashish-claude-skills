@@ -1,18 +1,23 @@
 ---
 name: model-routing
-description: Use when the user asks which Claude model or effort level to use, how to save tokens or cost, how to switch model or effort, or when a switchboard hint appears and the user wants it explained or tuned.
+description: Use when the user asks which Claude model or effort level to use, how to save tokens or cost, how to switch model or effort, or when a switchboard routing hint appears: run the prompt in a subagent with the model and effort it names.
 ---
 
 # Model Routing
 
-Use the cheapest setting that does the job well, and step up when the work is hard. The `switchboard` hook suggests a setting per prompt; this skill explains it. Suggest only: never change the model or effort yourself.
+Use the cheapest setting that does the job well, and step up when the work is hard. The `switchboard` hook picks a setting per prompt; when the session's setting does not fit, the main agent runs the prompt in an `Agent` subagent with that `model` and `effort`. The session's own setting never changes.
 
 ## Steps
 
 1. **Classify** the task with the table. When in doubt between two rows, pick the higher one: a wrong answer costs more than the tokens saved.
 2. **Compare** with the current model and effort (shown in the app, or the last `"model"` and `"effort"` in the session transcript).
-3. **Suggest** in one line, with the exact commands. Skip it when the current setting already fits.
-4. **Carry on** with the task at the current setting unless the user switches.
+3. **Check the cost.** A subagent starts cold, and the main model still reads its result, so stepping down only pays when the task is real work:
+   - **Up** (stronger model, or more effort): always route. That is for quality.
+   - **Down to Sonnet for a routine code change:** route. The edits and checks run cheaper.
+   - **Down for a lookup, a question or general chat, or a same-model effort step-down:** do not route. Answer inline and keep it short.
+4. **Route** when it does not fit and the cost check says so: call `Agent` with `model` (`haiku`, `sonnet`, `opus`), `effort` from the table, `subagent_type: "general-purpose"` and a complete brief. The brief carries the prompt plus whatever this conversation knows that the task needs: the subagent starts cold. Say it in one line first: `Routing to <Model> at <effort>.`
+5. **Relay** the subagent's result. Do not redo its work at the main model. If it stopped to ask for a commit, push, delete, deploy or any other confirmation, put that question to the user.
+6. **Do it inline instead** when the current setting already fits, the prompt only needs this conversation ("summarise what we did"), or the user said to stay on the current model.
 
 ## Checklist
 
@@ -35,18 +40,19 @@ Fable 5.2 (`fable`, `claude-fable-5-2`) also supports all five effort levels; th
 
 ## How the hook decides
 
-`hooks/route_model.py` runs on `UserPromptSubmit`. Keywords pick the tier: Opus words first (architecture, security, auth, flaky, root cause, migrate, rewrite...), then code verbs or prompts over 1,500 characters go to Sonnet, then short questions go to Haiku. Anything else defaults to Sonnet. It reads the current model and effort from the end of the transcript, because the hook input carries neither. It stays quiet when the current setting fits, when the prompt is an acknowledgement or a slash command, and when the advice matches its last hint in the session.
+`hooks/route_model.py` runs on `UserPromptSubmit`. Keywords pick the tier: Opus words first (architecture, security, auth, flaky, root cause, migrate, rewrite...), then code verbs or prompts over 1,500 characters go to Sonnet, then short questions go to Haiku. Anything else defaults to Sonnet. It reads the current model and effort from the end of the transcript, because the hook input carries neither. It stays quiet when the current setting fits and when the prompt is an acknowledgement or a slash command. It routes every prompt that does not fit, not only the first, but `worth_routing()` drops the step-downs a cold subagent would make dearer: everything but routine code changes.
 
 ## Output
 
 ```
-switchboard: this looks like <reason>; <Model> (`<id>`) at effort <level> fits for fewer tokens | a better result. You are on <current>. To switch: `/model <alias>` and `/effort <level>`.
+switchboard: this looks like <reason>; <Model> at effort <level> fits for fewer tokens | a better result. You are on <current>. Route it: call the Agent tool with model "<alias>", effort "<level>", subagent_type "general-purpose" and a complete brief (...). Relay its result; do not redo the work. Skip routing if you are already on <Model> at effort <level>, or the prompt only needs this conversation.
 ```
 
 ## Rules
 
-- Suggest only. Never call a tool that changes the model, effort or fast mode unless the user asks for it in this turn.
-- One line, once per prompt, then do the work.
+- Route through a subagent; never change the session's model, effort or fast mode unless the user asks for it in this turn.
+- One subagent per prompt. Do not nest it: the subagent does the work itself.
+- The subagent asks before anything it cannot undo (commit, push, delete, deploy, migration, paid API), and the main agent relays that question to the user.
 - Never step down for security, auth, money or data-loss work, even if the prompt is short.
 
 ## Opus advisor
