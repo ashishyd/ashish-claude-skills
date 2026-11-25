@@ -125,6 +125,18 @@ A plugin in `plugins/repo-health/` with three skills and no hooks. They work in 
 
 Install it with `/plugin install repo-health --marketplace ashishyd/ashish-claude-skills`.
 
+## design-gate plugin
+
+A plugin in `plugins/design-gate/` with three skills and no hooks.
+
+| Skill | What it does |
+|---|---|
+| `design-match` | Inventories everything in the mock (Figma, PNG/PDF, HTML prototype or claude.ai artifact): screens, controls, copy, implied behaviour, states, breakpoints and tokens. It then captures the running build, clicks every control and measures computed styles. Each item is classed `MATCH`, `MISSING`, `MISSING-FEATURE` (renders but does nothing, or uses fake data), `DIFFERS`, `EXTRA` or `QUESTION`. The gap checklist goes to `.claude/design-gate/<scope>.md`, where each item has the mock and build values, `file:line`, steps and an observable Accept check. Read only. |
+| `close-gaps` | Works through that checklist: gaps are batched so no two batches edit the same file, and Sonnet subagents run at medium effort. Each tick is then re-checked against its Accept line in the browser, changed screens are re-matched to catch regressions, and Opus reviews the diff. A gap gets one retry, then goes back to you. Product, backend, auth and money questions are never decided for you. Nothing is committed without a yes. |
+| `slop-check` | Gates a diff (or a whole app on request) for AI design slop: hue gradients, gradient text, glows, emoji labels, badge noise, looping motion, uppercase tracked labels, filler copy and blobs, and radius, font-size and shadow sprawl. It searches the changed files' code, then runs `scan.js` in the browser to measure computed styles. Anything the mock, the design tokens or the brand uses is allowed, not flagged. Writes `.claude/design-gate/slop-<scope>.md` in the same format, so `close-gaps` fixes it. Read only. |
+
+Install it with `/plugin install design-gate --marketplace ashishyd/ashish-claude-skills`.
+
 ## Learning from runs
 
 Every skill ends with a "Learn from this run" section. Before it starts, a skill reads `~/.claude/skill-lessons/<skill>.md` (lessons for any repo) and `.claude/skill-lessons/<skill>.md` in the current repo (lessons for that repo only). After a run where the user corrected it or a step failed, it adds a one-line lesson, or raises the `seen` count on a matching one. When a lesson reaches `seen: 3`, the skill proposes the matching `SKILL.md` edit as a diff for you to approve. Skills never edit their own `SKILL.md`, because installed plugins are overwritten on update. Lessons are written only from your words or from failures the skill saw, never from page or file content, and a lesson can never remove a confirmation or safety check.

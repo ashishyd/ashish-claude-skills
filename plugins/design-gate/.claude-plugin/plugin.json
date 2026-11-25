@@ -1,0 +1,22 @@
+{
+  "name": "design-gate",
+  "version": "0.2.0",
+  "description": "Checks a built UI against its design mock (Figma, image, PDF, HTML or claude.ai artifact) in every aspect: missing screens, sections, controls and features, content, states, layout and visual tokens. Also gates changes for AI design slop, with the mock and design tokens as the allow-list. Writes gap checklists that Sonnet subagents can work through cold, then re-checks each gap.",
+  "author": {
+    "name": "Ashish Yadav"
+  },
+  "license": "MIT",
+  "keywords": [
+    "design",
+    "mock",
+    "figma",
+    "fidelity",
+    "pixel-perfect",
+    "gap-analysis",
+    "ui",
+    "qa",
+    "slop",
+    "ai-slop",
+    "vibecoded"
+  ]
+}

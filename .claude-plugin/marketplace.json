@@ -44,6 +44,11 @@
       "name": "repo-health",
       "source": "./plugins/repo-health",
       "description": "Any-stack repo checks: an environment doctor, API drift between server routes and client calls, and vendor-neutral feature-flag cleanup."
+    },
+    {
+      "name": "design-gate",
+      "source": "./plugins/design-gate",
+      "description": "Checks a built UI against its design mock (Figma, image, HTML or claude.ai artifact) for missing features, content, states and visual differences, gates changes for AI design slop with the mock as the allow-list, and has Sonnet subagents close each gap with a browser check."
     }
   ]
 }
