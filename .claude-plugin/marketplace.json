@@ -48,7 +48,7 @@
     {
       "name": "design-gate",
       "source": "./plugins/design-gate",
-      "description": "Checks a built UI against its design mock (Figma, image, HTML or claude.ai artifact) for missing features, content, states and visual differences, gates changes for AI design slop with the mock as the allow-list, and has Sonnet subagents close each gap with a browser check."
+      "description": "Checks a built UI against its design mock (Figma, image, HTML or claude.ai artifact) for missing features, content, states and visual differences. It also gates AI design slop, tracks mock changes and drafts designer questions. Sonnet subagents close each gap, with a browser check, and a hook reminds you to re-check after UI edits."
     }
   ]
 }

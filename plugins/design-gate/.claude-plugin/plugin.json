@@ -1,7 +1,7 @@
 {
   "name": "design-gate",
-  "version": "0.2.0",
-  "description": "Checks a built UI against its design mock (Figma, image, PDF, HTML or claude.ai artifact) in every aspect: missing screens, sections, controls and features, content, states, layout and visual tokens. Also gates changes for AI design slop, with the mock and design tokens as the allow-list. Writes gap checklists that Sonnet subagents can work through cold, then re-checks each gap.",
+  "version": "0.3.0",
+  "description": "Checks a built UI against its design mock (Figma, image, PDF, HTML or claude.ai artifact) in every aspect: missing screens, sections, controls and features, content, states, layout and visual tokens. It also gates changes for AI design slop (the mock and design tokens are the allow-list), keeps the gap report current when the mock changes, and drafts designer questions. Gap checklists are written for Sonnet subagents to work through cold, and each gap is re-checked. A hook reminds you to re-check after UI edits to files a report names.",
   "author": {
     "name": "Ashish Yadav"
   },
@@ -17,6 +17,8 @@
     "qa",
     "slop",
     "ai-slop",
-    "vibecoded"
+    "vibecoded",
+    "mock-drift",
+    "hooks"
   ]
 }

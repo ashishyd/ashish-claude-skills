@@ -11,7 +11,7 @@ Work through a `design-match` report until every open gap is closed, marked bloc
 
 1. Read `.claude/design-gate/<slug>.md`. If there are several, ask which one. If there are none, run `design-match` first.
 2. If the report is older than the last commit that touched the files it names, warn that line numbers may have moved. Subagents re-grep `Where`; they do not trust the line numbers.
-3. Collect the open `[ ]` gaps in priority order. Skip any gap whose `Depends` points to an unanswered `Q..`, and list those as blocked.
+3. Collect the open `[ ]` gaps in priority order. Skip `[~] obsolete` (removed from the mock by `mock-drift`) and `[!]` (handed back to the user). Skip any gap whose `Depends` points to an unanswered `Q..`, and list those as blocked.
 4. Ask the user once, in a single message: which priorities to run (default P0–P2), and a yes or no for each `Extras` item. Do not ask them to approve each gap separately.
 
 ## 2. Batch

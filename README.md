@@ -127,13 +127,16 @@ Install it with `/plugin install repo-health --marketplace ashishyd/ashish-claud
 
 ## design-gate plugin
 
-A plugin in `plugins/design-gate/` with three skills and no hooks.
+A plugin in `plugins/design-gate/` with four skills and one hook.
 
 | Skill | What it does |
 |---|---|
-| `design-match` | Inventories everything in the mock (Figma, PNG/PDF, HTML prototype or claude.ai artifact): screens, controls, copy, implied behaviour, states, breakpoints and tokens. It then captures the running build, clicks every control and measures computed styles. Each item is classed `MATCH`, `MISSING`, `MISSING-FEATURE` (renders but does nothing, or uses fake data), `DIFFERS`, `EXTRA` or `QUESTION`. The gap checklist goes to `.claude/design-gate/<scope>.md`, where each item has the mock and build values, `file:line`, steps and an observable Accept check. Read only. |
+| `design-match` | Inventories everything in the mock (Figma, PNG/PDF, HTML prototype or claude.ai artifact): screens, controls, copy, implied behaviour, states, breakpoints and tokens. It then captures the running build, clicks every control and measures computed styles. Each item is classed `MATCH`, `MISSING`, `MISSING-FEATURE` (renders but does nothing, or uses fake data), `DIFFERS`, `EXTRA` or `QUESTION`. The gap checklist goes to `.claude/design-gate/<scope>.md`, where each item has the mock and build values, `file:line`, steps and an observable Accept check. It saves the mock inventory for `mock-drift`, and ends with a ready-to-paste list of designer questions (states the mock does not show, missing breakpoints, conflicts), which it never sends. Read only. |
 | `close-gaps` | Works through that checklist: gaps are batched so no two batches edit the same file, and Sonnet subagents run at medium effort. Each tick is then re-checked against its Accept line in the browser, changed screens are re-matched to catch regressions, and Opus reviews the diff. A gap gets one retry, then goes back to you. Product, backend, auth and money questions are never decided for you. Nothing is committed without a yes. |
 | `slop-check` | Gates a diff (or a whole app on request) for AI design slop: hue gradients, gradient text, glows, emoji labels, badge noise, looping motion, uppercase tracked labels, filler copy and blobs, and radius, font-size and shadow sprawl. It searches the changed files' code, then runs `scan.js` in the browser to measure computed styles. Anything the mock, the design tokens or the brand uses is allowed, not flagged. Writes `.claude/design-gate/slop-<scope>.md` in the same format, so `close-gaps` fixes it. Read only. |
+| `mock-drift` | When the mock changes after building has started, it re-reads the mock, pairs rows with the saved inventory (Figma node ID first), and updates the report in place. New elements become gaps; removed ones are marked obsolete, and closed gaps whose design changed are reopened. Gap IDs stay stable. If the mock was restructured, it suggests a fresh `design-match` instead of patching. |
+
+The hook (`hooks/recheck.py`, PostToolUse on Edit/Write) runs only in repos that have `.claude/design-gate/` reports. When you edit a UI file named in a gap's `Where:` line, it names those gap IDs once per session, so matched screens get re-checked. Any other UI edit gets one general reminder per session. Self-check: `python3 plugins/design-gate/hooks/test_recheck.py`.
 
 Install it with `/plugin install design-gate --marketplace ashishyd/ashish-claude-skills`.
 

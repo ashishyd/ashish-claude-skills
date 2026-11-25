@@ -115,6 +115,12 @@ Score: <MATCH count>/<inventory count> items match. P0 <n> · P1 <n> · P2 <n> �
 
 ## Not checked
 <screens, states or breakpoints you could not reach, and why>
+
+## Inventory
+<!-- the mock as read on <date>; mock-drift diffs the next mock version against this -->
+| ID | Screen | Element | Figma node | Key values |
+|---|---|---|---|---|
+| S2.4 | Reports | Export CSV button | 12:345 | primary, 36px tall, label "Export CSV", top-right toolbar |
 ````
 
 Rules for gap items:
@@ -123,6 +129,29 @@ Rules for gap items:
 - `Accept` is something you can see or measure, never "matches the design".
 - A gap that needs a new API, schema, auth rule or payment goes under Questions, with the visual part as its own gap that depends on the question.
 - Order gaps by priority, then by dependency.
+- Write every inventory row to the Inventory section, with its Figma node ID when there is one. Without it, `mock-drift` cannot tell what changed.
+
+## 6. Designer questions
+
+Mocks usually show only the normal case. Once the report is written, collect the questions only a designer can answer, so they can all go in one message instead of interrupting the developer one at a time:
+
+- every `QUESTION` item;
+- states the build needs but the mock does not show: empty, error, loading, long text, zero, one or many items, permission denied, offline;
+- breakpoints that have no frame, when the build has to support them;
+- conflicts between frames, or between the mock and the design system.
+
+Add a `## Designer questions` section to the report, and show it in chat as a ready-to-paste block:
+
+```
+Questions on <scope> (<mock link>):
+Reports (frame "Reports / Desktop"):
+1. Empty state: what should the table show when there are no reports yet? (blocks G05)
+2. Export CSV: which columns go in the file? (blocks G01)
+Settings:
+3. There is no mobile frame. Stack the two columns, or use tabs?
+```
+
+Group the questions by screen, link each to its frame, say which gap each one blocks, and offer a default when there is an obvious one ("unless you say otherwise, we will use the existing EmptyState component"). Never send it; sending a message is the user's call.
 
 ## Rules
 
