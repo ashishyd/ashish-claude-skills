@@ -1,0 +1,15 @@
+{
+  "name": "pr-review-local",
+  "version": "0.1.0",
+  "description": "Companion to pr-review: agent-spend, which breaks Claude Code token spend down by repo, branch and PR from your local transcripts, with PRs mapped through gh. Needs python3 on the PATH.",
+  "author": {
+    "name": "Ashish Yadav"
+  },
+  "license": "MIT",
+  "keywords": [
+    "pr-review",
+    "tokens",
+    "cost",
+    "spend"
+  ]
+}

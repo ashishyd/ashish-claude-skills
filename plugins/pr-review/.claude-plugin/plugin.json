@@ -1,7 +1,7 @@
 {
   "name": "pr-review",
-  "version": "0.2.0",
-  "description": "Makes a change easy for a human to review and shows what it cost: a one-screen reviewer brief, a splitter that cuts a large diff into small stacked PRs, and Claude Code token spend broken down by PR.",
+  "version": "0.3.0",
+  "description": "Makes a change easy for a human to review: a one-screen reviewer brief and a splitter that cuts a large diff into small stacked PRs. Add pr-review-local for Claude Code token spend broken down by PR.",
   "author": {
     "name": "Ashish Yadav"
   },

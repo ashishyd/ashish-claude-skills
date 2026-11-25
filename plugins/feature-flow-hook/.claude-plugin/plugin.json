@@ -1,0 +1,14 @@
+{
+  "name": "feature-flow-hook",
+  "version": "0.1.0",
+  "description": "Companion to feature-flow: a UserPromptSubmit hook that spots new-feature requests and points Claude at feature-flow:new-feature, and a Stop hook that will not let a turn end while a feature checklist is in progress, code changed and README.md did not. Needs feature-flow installed and python3 on the PATH.",
+  "author": {
+    "name": "Ashish Yadav"
+  },
+  "license": "MIT",
+  "keywords": [
+    "feature-flow",
+    "hook",
+    "readme"
+  ]
+}

@@ -1,6 +1,6 @@
 ---
 name: new-feature
-description: Use when the user asks to plan, add, build, create, implement or ship a new feature, page, endpoint, command, screen or capability, or when a feature-flow hint appears. Plans with Opus, then hands dev and test steps to Sonnet at medium effort in fresh subagents, and finishes with README.md updated. Works alongside superpowers: after superpowers:brainstorming, use this instead of superpowers:writing-plans.
+description: "Use when the user asks to plan, add, build, create, implement or ship a new feature, page, endpoint, command, screen or capability, or when a feature-flow hint appears. Plans with Opus, then hands dev and test steps to Sonnet at medium effort in fresh subagents, and finishes with README.md updated. Works alongside superpowers: after superpowers:brainstorming, use this instead of superpowers:writing-plans."
 ---
 
 # New Feature
@@ -67,7 +67,7 @@ The last step is `docs: update README.md`. Send it to a builder like any other s
 
 ## 6. Close
 
-Set `status: done` in the checklist (or `status: abandoned` if the user stops the feature). While any checklist says `in-progress`, the plugin's Stop hook will not let the turn end with code changed and README.md unchanged.
+Set `status: done` in the checklist (or `status: abandoned` if the user stops the feature). While any checklist says `in-progress`, the `feature-flow-hook` plugin's Stop hook, when installed, will not let the turn end with code changed and README.md unchanged.
 
 Do not commit, push or open a PR unless the user asks.
 

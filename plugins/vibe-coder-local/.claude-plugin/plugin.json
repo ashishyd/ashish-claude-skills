@@ -1,0 +1,16 @@
+{
+  "name": "vibe-coder-local",
+  "version": "0.1.0",
+  "description": "Companion to vibe-coder with the parts that run local scripts: the improve retro, which reads this project's past session transcripts for repeated mistakes and fixes their cause, and a PreToolUse hook that trims noisy install, build and test output. Needs python3 on the PATH.",
+  "author": {
+    "name": "Ashish Yadav"
+  },
+  "license": "MIT",
+  "keywords": [
+    "vibe-coder",
+    "retro",
+    "learning",
+    "hook",
+    "tokens"
+  ]
+}

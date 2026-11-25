@@ -72,7 +72,7 @@ def hint_for(path, seen):
     names = ", ".join(os.path.basename(r) for r in reports)
     return ("design-gate: reports exist (%s). UI edits can break screens that matched; "
             "before calling this done, run `design-gate:design-match` on the screens you touched "
-            "and `design-gate:slop-check` on the diff." % names, ["*generic*"])
+            "and `design-gate-local:slop-check` on the diff." % names, ["*generic*"])
 
 
 def main():

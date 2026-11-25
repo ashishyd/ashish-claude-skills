@@ -1,0 +1,15 @@
+{
+  "name": "design-gate-local",
+  "version": "0.1.0",
+  "description": "Companion to design-gate with the parts that run code: slop-check, which gates a diff for AI design slop with an in-browser scan (the mock and design tokens are the allow-list), and a PostToolUse hook that reminds you to re-check design-gate reports after UI edits. The hook needs python3 on the PATH.",
+  "author": {
+    "name": "Ashish Yadav"
+  },
+  "license": "MIT",
+  "keywords": [
+    "design-gate",
+    "slop",
+    "ai-slop",
+    "hook"
+  ]
+}

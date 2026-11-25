@@ -1,11 +1,11 @@
 ---
 name: model-routing
-description: Use when the user asks which Claude model or effort level to use, how to save tokens or cost, how to switch model or effort, or when a switchboard routing hint appears: run the prompt in a subagent with the model and effort it names.
+description: "Use when the user asks which Claude model or effort level to use, how to save tokens or cost, how to switch model or effort, or when a switchboard routing hint appears: run the prompt in a subagent with the model and effort it names."
 ---
 
 # Model Routing
 
-Use the cheapest setting that does the job well, and step up when the work is hard. The `switchboard` hook picks a setting per prompt; when the session's setting does not fit, the main agent runs the prompt in an `Agent` subagent with that `model` and `effort`. The session's own setting never changes.
+Use the cheapest setting that does the job well, and step up when the work is hard. The `switchboard-hook` companion plugin, when installed, picks a setting per prompt; when the session's setting does not fit, the main agent runs the prompt in an `Agent` subagent with that `model` and `effort`. The session's own setting never changes.
 
 ## Steps
 
@@ -40,7 +40,7 @@ Fable 5.2 (`fable`, `claude-fable-5-2`) also supports all five effort levels; th
 
 ## How the hook decides
 
-`hooks/route_model.py` runs on `UserPromptSubmit`. Keywords pick the tier: Opus words first (architecture, security, auth, flaky, root cause, migrate, rewrite...), then code verbs or prompts over 1,500 characters go to Sonnet, then short questions go to Haiku. Anything else defaults to Sonnet. It reads the current model and effort from the end of the transcript, because the hook input carries neither. It stays quiet when the current setting fits and when the prompt is an acknowledgement or a slash command. It routes every prompt that does not fit, not only the first, but `worth_routing()` drops the step-downs a cold subagent would make dearer: everything but routine code changes. Past each 100k tokens of context it also adds a session-size line with this session's artifact links; the `session-fit` skill handles that line (stay, subagent or new session with a carry-over brief).
+`hooks/route_model.py` in the `switchboard-hook` plugin runs on `UserPromptSubmit`. Keywords pick the tier: Opus words first (architecture, security, auth, flaky, root cause, migrate, rewrite...), then code verbs or prompts over 1,500 characters go to Sonnet, then short questions go to Haiku. Anything else defaults to Sonnet. It reads the current model and effort from the end of the transcript, because the hook input carries neither. It stays quiet when the current setting fits and when the prompt is an acknowledgement or a slash command. It routes every prompt that does not fit, not only the first, but `worth_routing()` drops the step-downs a cold subagent would make dearer: everything but routine code changes. Past each 100k tokens of context it also adds a session-size line with this session's artifact links; the `session-fit` skill handles that line (stay, subagent or new session with a carry-over brief).
 
 ## Output
 

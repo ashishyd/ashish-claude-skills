@@ -1,7 +1,7 @@
 {
   "name": "feature-flow",
-  "version": "0.3.0",
-  "description": "Every new-feature request runs as Opus plan -> checklist -> Sonnet (medium effort) build and test, each in a fresh-context subagent to save tokens, and cannot finish until README.md is updated.",
+  "version": "0.4.0",
+  "description": "Every new-feature request runs as Opus plan -> checklist -> Sonnet (medium effort) build and test, each in a fresh-context subagent to save tokens, and finishes with README.md updated. Add feature-flow-hook to catch new-feature requests automatically and block finishing until README.md is updated.",
   "author": { "name": "Ashish Yadav" },
   "license": "MIT",
   "keywords": ["feature", "planning", "checklist", "subagents", "opus", "sonnet", "readme", "tokens"]

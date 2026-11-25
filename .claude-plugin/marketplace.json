@@ -28,22 +28,42 @@
     {
       "name": "switchboard",
       "source": "./plugins/switchboard",
-      "description": "Routes each prompt to the cheapest Claude model and effort level that fits it, from a UserPromptSubmit hook that runs it in a subagent with that model and effort when the current setting does not fit. Flags large sessions and carries artifacts into new ones."
+      "description": "Picks the cheapest Claude model and effort that fits the work, and when a long session should stay, use a subagent or start fresh, with a carry-over brief for artifacts. Skills only; add switchboard-hook for automatic per-prompt routing."
+    },
+    {
+      "name": "switchboard-hook",
+      "source": "./plugins/switchboard-hook",
+      "description": "Optional companion to switchboard: a UserPromptSubmit hook that routes each prompt to the cheapest model and effort that fits, in a subagent, and flags large sessions. Needs python3."
     },
     {
       "name": "feature-flow",
       "source": "./plugins/feature-flow",
-      "description": "New-feature requests run as Opus plan -> checklist -> Sonnet (medium effort) build and test in fresh-context subagents, with a Stop hook that keeps README.md updated."
+      "description": "New-feature requests run as Opus plan -> checklist -> Sonnet (medium effort) build and test in fresh-context subagents, finishing with README.md updated. Skills only; add feature-flow-hook for automatic detection and the README gate."
+    },
+    {
+      "name": "feature-flow-hook",
+      "source": "./plugins/feature-flow-hook",
+      "description": "Optional companion, own marketplace only. Companion to feature-flow: a UserPromptSubmit hook that spots new-feature requests and points Claude at feature-flow:new-feature, and a Stop hook that will not let a turn end while a feature checklist is in progress, code changed and README.md did not. Needs feature-flow installed and python3 on the PATH."
     },
     {
       "name": "vibe-coder",
       "source": "./plugins/vibe-coder",
-      "description": "Tailscale links instead of localhost for anything running on this machine, and context-saving rules for every coding task, and an improve retro that learns from past sessions' mistakes, and launch-ready / launch-safe pre-launch checks for the pages and the backend. Plus a hook that trims noisy install, build and test output."
+      "description": "Day-to-day coding habits: Tailscale links instead of localhost for anything running on this machine, context-saving rules for every coding task, a hunter that finds implicit state machines and makes them explicit, a bug triager that only fixes bugs worth fixing, and two pre-launch checks for vibe-coded sites (launch-ready for the pages, launch-safe for keys, billing abuse, payments, monitoring and launch day), each auditing with five read-only subagents and fixing the approved issues in one pass. Add vibe-coder-local for the improve retro and the output-trimming hook."
+    },
+    {
+      "name": "vibe-coder-local",
+      "source": "./plugins/vibe-coder-local",
+      "description": "Optional companion, own marketplace only. Companion to vibe-coder with the parts that run local scripts: the improve retro, which reads this project's past session transcripts for repeated mistakes and fixes their cause, and a PreToolUse hook that trims noisy install, build and test output. Needs python3 on the PATH."
     },
     {
       "name": "pr-review",
       "source": "./plugins/pr-review",
-      "description": "A one-screen brief for the human reviewer, a splitter that cuts a large diff into small stacked PRs, and agent token spend broken down by PR."
+      "description": "Makes a change easy for a human to review: a one-screen reviewer brief and a splitter that cuts a large diff into small stacked PRs. Add pr-review-local for Claude Code token spend broken down by PR."
+    },
+    {
+      "name": "pr-review-local",
+      "source": "./plugins/pr-review-local",
+      "description": "Optional companion, own marketplace only. Companion to pr-review: agent-spend, which breaks Claude Code token spend down by repo, branch and PR from your local transcripts, with PRs mapped through gh. Needs python3 on the PATH."
     },
     {
       "name": "repo-health",
@@ -53,7 +73,12 @@
     {
       "name": "design-gate",
       "source": "./plugins/design-gate",
-      "description": "Checks a built UI against its design mock (Figma, image, HTML or claude.ai artifact) for missing features, content, states and visual differences. It also gates AI design slop, tracks mock changes and drafts designer questions. Sonnet subagents close each gap, with a browser check, and a hook reminds you to re-check after UI edits."
+      "description": "Checks a built UI against its design mock (Figma, image, PDF, HTML or claude.ai artifact) in every aspect: missing screens, sections, controls and features, content, states, layout and visual tokens. It also keeps the gap report current when the mock changes, and drafts designer questions. Gap checklists are written for Sonnet subagents to work through cold, and each gap is re-checked. Add design-gate-local for the AI-slop gate and a hook that reminds you to re-check after UI edits."
+    },
+    {
+      "name": "design-gate-local",
+      "source": "./plugins/design-gate-local",
+      "description": "Optional companion, own marketplace only. Companion to design-gate with the parts that run code: slop-check, which gates a diff for AI design slop with an in-browser scan (the mock and design tokens are the allow-list), and a PostToolUse hook that reminds you to re-check design-gate reports after UI edits. The hook needs python3 on the PATH."
     }
   ]
 }

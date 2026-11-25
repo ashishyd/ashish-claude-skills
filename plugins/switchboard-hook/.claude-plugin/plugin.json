@@ -1,0 +1,8 @@
+{
+  "name": "switchboard-hook",
+  "version": "0.1.0",
+  "description": "Companion to switchboard: a UserPromptSubmit hook that picks the cheapest Claude model and effort for each prompt and, when the current setting does not fit, asks Claude to run it in a subagent with that model and effort. Also flags each 100k tokens of session size. Needs switchboard installed and python3 on the PATH.",
+  "author": { "name": "Ashish Yadav" },
+  "license": "MIT",
+  "keywords": ["switchboard", "hook", "model", "effort", "routing"]
+}
