@@ -1,0 +1,8 @@
+{
+  "name": "quality-gates-hook",
+  "version": "0.1.0",
+  "description": "Companion to quality-gates: a PostToolUse hook that names the quality-gates skill that fits the file just edited, once per skill per session. Needs quality-gates installed and python3 on the PATH.",
+  "author": { "name": "Ashish Yadav" },
+  "license": "MIT",
+  "keywords": ["quality-gates", "hook", "routing"]
+}

@@ -8,7 +8,12 @@
     {
       "name": "quality-gates",
       "source": "./plugins/quality-gates",
-      "description": "TypeScript types, Vitest and Playwright tests, security, login and access, personal data and privacy, threat modelling before launch, design and UX audits, and CLAUDE.md sync, routed by a hook to the file being edited."
+      "description": "TypeScript types, Vitest and Playwright tests, security, login and access, personal data and privacy, threat modelling before launch, design and UX audits, and CLAUDE.md sync. Skills only; add quality-gates-hook for a per-file nudge."
+    },
+    {
+      "name": "quality-gates-hook",
+      "source": "./plugins/quality-gates-hook",
+      "description": "Optional companion to quality-gates: a hook that names the right quality-gates skill for the file being edited, once per session. Needs python3."
     },
     {
       "name": "confluence-diagrams",

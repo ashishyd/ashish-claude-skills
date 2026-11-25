@@ -35,7 +35,7 @@ These tools are for research and planning. They are not financial advice. Tradin
 
 ## quality-gates plugin
 
-A plugin in `plugins/quality-gates/` with ten short skills and one hook.
+A plugin in `plugins/quality-gates/` with ten short skills. The optional companion `plugins/quality-gates-hook/` adds the hook; it is kept separate because the Claude plugin directory accepts hooks and scripts only from Verified organizations.
 
 | Skill | When Claude uses it |
 |-------|---------------------|
@@ -50,7 +50,7 @@ A plugin in `plugins/quality-gates/` with ten short skills and one hook.
 | `ux-audit` | A user-facing flow was just built or changed: how it works, including accessibility. |
 | `claude-md-sync` | A change touched business logic, data model, API, architecture or commands, so CLAUDE.md may need a line. |
 
-The hook runs after each file edit and names the skill that fits the file (by extension and path), once per skill per session. Nothing is added to context for other files, and a skill's body is read only when Claude loads it.
+The companion hook runs after each file edit and names the skill that fits the file (by extension and path), once per skill per session. Nothing is added to context for other files, and a skill's body is read only when Claude loads it.
 
 Install it from inside Claude Code (2.1.275 or later):
 
@@ -58,7 +58,7 @@ Install it from inside Claude Code (2.1.275 or later):
 /plugin install quality-gates --marketplace ashishyd/ashish-claude-skills
 ```
 
-On older versions, run `/plugin marketplace add ashishyd/ashish-claude-skills` first, then `/plugin install quality-gates@ashish-claude-skills`. The hook needs `python3` on the PATH.
+On older versions, run `/plugin marketplace add ashishyd/ashish-claude-skills` first, then `/plugin install quality-gates@ashish-claude-skills`. For the hook, also install `quality-gates-hook` the same way; it needs `python3` on the PATH.
 
 **Optional: [obscura](https://github.com/h4ckf0r0day/obscura).** The skills that open pages (`design-audit`, `ux-audit`, `playwright-tests`, feature-flow's `new-feature` and vibe-coder's `tailscale-links`) use obscura first if it is on the PATH. It is a headless browser written in Rust and faster than Chrome. They run it with `--allow-private-network` because obscura blocks localhost by default. Without obscura, they use the Chrome browser tool. Install it from the release binaries or with `cargo`.
 
