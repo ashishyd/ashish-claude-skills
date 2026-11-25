@@ -7,7 +7,7 @@ import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from route_model import classify, fits, worth_routing  # noqa: E402
+from route_model import classify, fits, worth_routing, context_tokens, artifact_urls  # noqa: E402
 
 CASES = {
     "what does git rebase --onto do?": "haiku",
@@ -77,4 +77,43 @@ try:
     assert run(json.dumps({"prompt": 42})) == "", "odd input must be silent"
 finally:
     os.remove(t.name)
-print("ok: %d prompt cases, fit check, cost gate, transcript model, routing, bad input" % len(CASES))
+usage = lambda n: json.dumps({"message": {"model": "claude-opus-5-5", "usage": {
+    "input_tokens": 4, "cache_creation_input_tokens": 1000, "cache_read_input_tokens": n,
+    "output_tokens": 9}}, "effort": "high"}) + "\n"
+with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False) as t:
+    msg = lambda *c: json.dumps({"message": {"content": list(c)}}) + "\n"
+    t.write(usage(10))
+    t.write(msg({"type": "text", "text": "pasted https://claude.ai/artifact/Pasted9 is not ours"}))
+    t.write(msg({"type": "tool_use", "id": "t1", "name": "Artifact", "input": {"file_path": "a.html"}}))
+    t.write(msg({"type": "tool_result", "tool_use_id": "t1",
+                 "content": "Published https://claude.ai/artifact/AbC123"}))
+    t.write(msg({"type": "tool_use", "id": "t2", "name": "Artifact",
+                 "input": {"url": "https://claude.ai/code/artifact/0f-9e"}}))
+    t.write(msg({"type": "tool_use", "id": "t3", "name": "Artifact",
+                 "input": {"url": "https://claude.ai/artifact/AbC123"}}))
+    t.write(msg({"type": "tool_use", "id": "t4", "name": "Bash", "input": {"command": "x"}}))
+    t.write(msg({"type": "tool_result", "tool_use_id": "t4",
+                 "content": "grep hit https://claude.ai/artifact/Grep7"}))
+    t.write(usage(130_000))
+try:
+    assert context_tokens(t.name) == 131_004, "last turn's usage, all three input fields"
+    assert artifact_urls(t.name) == ["https://claude.ai/artifact/AbC123",
+                                     "https://claude.ai/code/artifact/0f-9e"], "Artifact calls only, deduped, in order"
+    assert context_tokens("/no/such/file") == 0 and artifact_urls("/no/such/file") == []
+    sid = "ctxcheck%d" % os.getpid()
+    ask = lambda p: json.dumps({"session_id": sid, "prompt": p, "transcript_path": t.name})
+    out = run(ask("design the system for audit logs with trade-offs"))
+    ctx = json.loads(out)["hookSpecificOutput"]["additionalContext"]
+    assert "~131k tokens" in ctx and "AbC123" in ctx and "session-fit" in ctx, ctx
+    assert "Agent tool" not in ctx, "on Opus high: context hint only, no routing"
+    assert run(ask("design the system for audit logs with trade-offs")) == "", "once per +100k"
+    with open(t.name, "a") as f:
+        f.write(usage(210_000))
+    assert "~211k" in run(ask("design the queue retry policy with trade-offs")), "next step speaks"
+    assert run(ask("ok go ahead")) == "", "acks stay silent"
+finally:
+    os.remove(t.name)
+    state = os.path.join(tempfile.gettempdir(), "switchboard-ctx-" + sid)
+    if os.path.exists(state):
+        os.remove(state)
+print("ok: %d prompt cases, fit check, cost gate, transcript model, routing, context size, artifacts, bad input" % len(CASES))

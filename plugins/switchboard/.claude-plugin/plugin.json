@@ -1,7 +1,7 @@
 {
   "name": "switchboard",
-  "version": "0.3.0",
-  "description": "Routes each prompt to the cheapest Claude model and effort level that fits it (Haiku for lookups, Sonnet for routine edits, Opus for architecture, security and hard bugs), from a UserPromptSubmit hook that stays quiet when the current model already fits. When it does not fit, the prompt runs in a subagent with the chosen model and effort; the session's own setting is unchanged.",
+  "version": "0.4.0",
+  "description": "Routes each prompt to the cheapest Claude model and effort level that fits it (Haiku for lookups, Sonnet for routine edits, Opus for architecture, security and hard bugs), from a UserPromptSubmit hook that stays quiet when the current model already fits. When it does not fit, the prompt runs in a subagent with the chosen model and effort; the session's own setting is unchanged. Also flags when a session grows past each 100k tokens, lists its artifacts, and writes a carry-over brief so a new session can pick them up.",
   "author": { "name": "Ashish Yadav" },
   "license": "MIT",
   "keywords": ["model", "effort", "routing", "tokens", "cost", "haiku", "sonnet", "opus"]

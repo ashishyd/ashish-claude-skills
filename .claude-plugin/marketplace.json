@@ -23,7 +23,7 @@
     {
       "name": "switchboard",
       "source": "./plugins/switchboard",
-      "description": "Routes each prompt to the cheapest Claude model and effort level that fits it, from a UserPromptSubmit hook that runs it in a subagent with that model and effort when the current setting does not fit."
+      "description": "Routes each prompt to the cheapest Claude model and effort level that fits it, from a UserPromptSubmit hook that runs it in a subagent with that model and effort when the current setting does not fit. Flags large sessions and carries artifacts into new ones."
     },
     {
       "name": "feature-flow",

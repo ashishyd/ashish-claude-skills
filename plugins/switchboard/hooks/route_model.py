@@ -12,6 +12,7 @@ import json
 import os
 import re
 import sys
+import tempfile
 
 MODELS = {  # tier -> (family, display, id, effort)
     "haiku": ("haiku", "Haiku 5.5", "claude-haiku-5-5", "low"),
@@ -39,6 +40,12 @@ TAIL_BYTES = 256 * 1024
 RANK = {"haiku": 0, "sonnet": 1, "opus": 2, "fable": 3}
 EFFORTS = ["low", "medium", "high", "xhigh", "max"]
 CODE_REASON = "a routine code change"
+CONTEXT_STEP = 100_000  # tokens: speak at 100k, then again each +100k
+URL_SCAN_BYTES = 32 * 1024 * 1024
+ARTIFACT = re.compile(r"https://claude\.ai/(?:code/)?artifact/[A-Za-z0-9_-]+")
+USAGE = re.compile(r'"usage"\s*:\s*\{[^{}]*?"input_tokens"\s*:\s*(\d+)[^{}]*?'
+                   r'"cache_creation_input_tokens"\s*:\s*(\d+)[^{}]*?'
+                   r'"cache_read_input_tokens"\s*:\s*(\d+)')
 
 
 def classify(prompt):
@@ -63,9 +70,7 @@ def current_setting(data):
     path = data.get("transcript_path") or ""
     if (not model or not effort) and os.path.isfile(path):
         try:
-            with open(path, "rb") as f:
-                f.seek(max(0, os.path.getsize(path) - TAIL_BYTES))
-                tail = f.read().decode("utf-8", "replace")
+            tail = read_tail(path)
             models = re.findall(r'"model"\s*:\s*"(claude-[\w.-]+)"', tail)
             efforts = re.findall(r'"effort"\s*:\s*"(\w+)"', tail)
             model = model or (models[-1] if models else None)
@@ -78,6 +83,57 @@ def current_setting(data):
 def fits(tier, model, effort):
     family, _, _, want = MODELS[tier]
     return bool(model) and family in model and effort in (None, want)
+
+
+def read_tail(path, size=TAIL_BYTES):
+    with open(path, "rb") as f:
+        f.seek(max(0, os.path.getsize(path) - size))
+        return f.read().decode("utf-8", "replace")
+
+
+def context_tokens(path):
+    """Tokens the last turn sent: what every next message re-sends. 0 when unknown."""
+    try:
+        hits = USAGE.findall(read_tail(path))
+    except OSError:
+        return 0
+    return sum(map(int, hits[-1])) if hits else 0
+
+
+def artifact_urls(path):
+    """Links of artifacts the Artifact tool made or touched here, oldest first, once each.
+    Only Artifact calls and their results count: a URL pasted or grepped in chat is not one."""
+    try:
+        lines = read_tail(path, URL_SCAN_BYTES).splitlines()
+    except OSError:
+        return []
+    ids, urls = set(), []
+    for line in lines:
+        if "claude.ai" not in line and '"Artifact"' not in line:
+            continue
+        try:
+            content = (json.loads(line).get("message") or {}).get("content")
+        except ValueError:
+            continue
+        for c in content if isinstance(content, list) else []:
+            if not isinstance(c, dict):
+                continue
+            if c.get("type") == "tool_use" and c.get("name") == "Artifact":
+                ids.add(c.get("id"))
+                urls += ARTIFACT.findall(json.dumps(c.get("input")))
+            elif c.get("type") == "tool_result" and c.get("tool_use_id") in ids:
+                urls += ARTIFACT.findall(json.dumps(c.get("content")))
+    return list(dict.fromkeys(urls))
+
+
+def context_hint(tokens, urls):
+    arts = " Artifacts here: %s; a new session reopens them with Artifact read <url> " \
+           "and keeps the link by publishing with that url." % ", ".join(urls[-5:]) if urls else ""
+    return ("switchboard: this session carries ~%dk tokens, re-sent with every message.%s "
+            "If this prompt builds on this chat, stay. If it is self-contained work, run it in "
+            "a subagent. If it is unrelated, tell the user in one line a new session is "
+            "cheaper and use the session-fit skill to write the carry-over brief."
+            % (tokens // 1000, arts))
 
 
 def worth_routing(tier, reason, model, effort):
@@ -113,11 +169,27 @@ def main():
     if not tier:
         return
     model, effort = current_setting(data)
-    if fits(tier, model, effort) or not worth_routing(tier, reason, model, effort):
-        return
-    print(json.dumps({"hookSpecificOutput": {
-        "hookEventName": "UserPromptSubmit",
-        "additionalContext": hint(tier, reason, model, effort)}}))
+    hints = []
+    if not fits(tier, model, effort) and worth_routing(tier, reason, model, effort):
+        hints.append(hint(tier, reason, model, effort))
+    path = str(data.get("transcript_path") or "")
+    tokens = context_tokens(path) if os.path.isfile(path) else 0
+    step = tokens // CONTEXT_STEP
+    if step:
+        session = re.sub(r"\W", "", str(data.get("session_id", "")))
+        state = os.path.join(tempfile.gettempdir(), "switchboard-ctx-" + session)
+        try:
+            with open(state) as f:
+                last = int(f.read().strip() or 0)
+        except (OSError, ValueError):
+            last = 0
+        if step > last:  # once per +100k, not every message
+            with open(state, "w") as f:
+                f.write(str(step))
+            hints.append(context_hint(tokens, artifact_urls(path)))
+    if hints:
+        print(json.dumps({"hookSpecificOutput": {
+            "hookEventName": "UserPromptSubmit", "additionalContext": "\n".join(hints)}}))
 
 
 if __name__ == "__main__":
