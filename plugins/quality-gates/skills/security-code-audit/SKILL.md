@@ -22,7 +22,7 @@ When writing code, follow **Rules when writing**. When reviewing, run **Steps**.
 ### Secrets: passwords, API keys, tokens, connection strings, private keys
 - Never in source, tests, fixtures, seed data, docs, comments, commit messages or URLs. Read them from env or the secret manager the repo already uses.
 - Add each new name to `.env.example` with an empty value, and check `.env*` (except `.env.example`) is in `.gitignore`.
-- No fallback values: `process.env.JWT_SECRET || "dev-secret"` ships the fallback to production. Fail at startup when a required secret is missing.
+- No fallback values: a secret read with a default such as `|| "dev-secret"` ships that default to production. Fail at startup when a required secret is missing.
 - Server-only: nothing secret behind `NEXT_PUBLIC_`, `VITE_`, `EXPO_PUBLIC_`, `REACT_APP_`, or in any file the client imports. Service-role and admin keys never leave the server.
 - Never log secrets, passwords, `Authorization` or `Cookie` headers, full request bodies or tokens. Redact before logging.
 - Found a real secret in code or git history? Stop and tell the user: it is leaked and must be rotated, and deleting it from the file is not enough. Do not rewrite history unasked, and do not echo the value.
@@ -50,7 +50,7 @@ For planning before launch (attack surface, launch checklist, pen test scope), u
 2. **Map.** List each entry point touched (route, action, job, webhook, CLI) with who can call it and what they control.
 3. **Trace.** Follow every controlled value to its sinks: query, shell, filesystem, HTML, redirect, outbound request, log, model prompt.
 4. **Check** against the table.
-5. **Tools.** Run what the repo already has (`npm audit`, `pnpm audit`, `pip-audit`, semgrep, gitleaks). Do not install tools. With no secret scanner, grep the added lines: `git diff HEAD -U0 | grep -nEi '^\+.*(api[_-]?key|secret|passw|token|bearer|BEGIN [A-Z ]*PRIVATE KEY|AKIA[0-9A-Z]{16}|sk_live_|ghp_|xox[bp]-)'`, then read each hit (most are names, not values).
+5. **Tools.** Run what the repo already has (`npm audit`, `pnpm audit`, `pip-audit`, semgrep, gitleaks). Do not install tools. With no secret scanner, search the added lines of `git diff HEAD -U0` for key-shaped text (api key, secret, passw, token, bearer, a `PRIVATE KEY` header, and the prefixes `AKIA`, `sk_live_`, `ghp_`, `xoxb-`, `xoxp-`), then read each hit (most are names, not values).
 6. **Report.**
 
 ## Checklist
