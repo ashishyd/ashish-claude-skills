@@ -1,0 +1,8 @@
+{
+  "name": "directory-readiness",
+  "version": "0.2.0",
+  "description": "Checks a Claude plugin and its skills against the Claude directory pre-submission checklist and Software Directory Policy before you submit: Blocks, reviewer Holds, Warnings and per-app support, with fixes.",
+  "author": { "name": "Ashish Yadav" },
+  "license": "MIT",
+  "keywords": ["plugins", "skills", "directory", "submission", "publish", "validation", "readiness", "policy"]
+}

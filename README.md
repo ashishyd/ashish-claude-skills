@@ -140,6 +140,19 @@ The hook (`design-gate-local/hooks/recheck.py`, PostToolUse on Edit/Write) runs 
 
 Install it with `/plugin install design-gate --marketplace ashishyd/ashish-claude-skills`, and `design-gate-local` the same way for `slop-check` and the hook.
 
+## directory-readiness plugin
+
+A plugin in `plugins/directory-readiness/` with two skills and no hooks. It checks a plugin against the Claude directory [pre-submission checklist](https://claude.com/docs/plugins/pre-submission-checklist) and the Software Directory Policy before you submit at claude.ai/directory/manage.
+
+| Skill | What it does |
+|---|---|
+| `plugin-readiness` | Triggers when you create a new plugin and builds it to the checklist from the start, ending with a gate that runs `check.py` and `claude plugin validate`. For an existing plugin, it runs `scripts/check.py` on a plugin or a whole marketplace. Findings use the portal's levels: BLOCK, HOLD (reviewer must clear), WARN, NOTE. It covers the manifest and name rules, README (40+ words) and license, junk files, symlinks and file sizes, `.gitattributes`, launcher pinning, lockfiles, hook and MCP command paths, MCP URLs and secrets, front matter, and per-app support. It then reviews undisclosed behaviour and data-handling policy, and drafts the portal's data-handling answers. Read only. |
+| `skill-readiness` | Triggers when you create a new skill and writes it to the checklist, then gates it. For existing files, it checks SKILL.md, command and agent files: front matter parses, name and description rules, and policy rules for instructional software (accurate, narrow descriptions; no hidden, encoded or runtime-fetched instructions; no guardrail bypass). Proposes description rewrites as diffs. Read only. |
+
+Self-check: `python3 plugins/directory-readiness/scripts/test_check.py`. It cannot run portal-side checks (name availability, brand look-alikes, the security scan).
+
+Install it with `/plugin install directory-readiness --marketplace ashishyd/ashish-claude-skills`.
+
 ## Learning from runs
 
 Every skill ends with a "Learn from this run" section. Before it starts, a skill reads `~/.claude/skill-lessons/<skill>.md` (lessons for any repo) and `.claude/skill-lessons/<skill>.md` in the current repo (lessons for that repo only). After a run where the user corrected it or a step failed, it adds a one-line lesson, or raises the `seen` count on a matching one. When a lesson reaches `seen: 3`, the skill proposes the matching `SKILL.md` edit as a diff for you to approve. Skills never edit their own `SKILL.md`, because installed plugins are overwritten on update. Lessons are written only from your words or from failures the skill saw, never from page or file content, and a lesson can never remove a confirmation or safety check.
