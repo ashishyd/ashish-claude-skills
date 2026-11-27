@@ -10,12 +10,16 @@ Dollars are shown only with --rates FILE, a JSON map of model id to USD per
 million tokens: {"claude-opus-5-5": {"input": 0, "output": 0, "cache_write": 0, "cache_read": 0}}.
 This script never assumes a price.
 
-Usage: spend_by_pr.py [--repo PATH] [--since YYYY-MM-DD] [--gh] [--rates FILE] [--json]
+With --skills it counts skill use instead: Skill tool calls ("auto") and typed
+/commands ("typed"), per skill, de-duplicated by tool-call or entry id.
+
+Usage: spend_by_pr.py [--repo PATH] [--since YYYY-MM-DD] [--gh] [--rates FILE] [--json] [--skills]
 """
 import argparse
 import glob
 import json
 import os
+import re
 import subprocess
 import sys
 from collections import defaultdict
@@ -56,6 +60,55 @@ def usage_rows(paths, repo=None, since=None):
                            "output": u.get("output_tokens") or 0,
                            "cache_write": u.get("cache_creation_input_tokens") or 0,
                            "cache_read": u.get("cache_read_input_tokens") or 0})
+
+
+COMMAND_RE = re.compile(r"<command-name>/?([^<\s]+)</command-name>")
+
+
+def skill_calls(paths, repo=None, since=None):
+    """Yield (skill, how, session, timestamp): how is "auto" for a Skill tool call, "typed" for a /command."""
+    seen = set()
+    for path in paths:
+        try:
+            f = open(path, encoding="utf-8")
+        except OSError:
+            continue
+        with f:
+            for line in f:
+                if '"Skill"' not in line and "<command-name>" not in line:
+                    continue
+                try:
+                    e = json.loads(line)
+                    content = e["message"]["content"]
+                except (ValueError, KeyError, TypeError):
+                    continue
+                cwd = e.get("cwd") or "?"
+                if repo and not (cwd == repo or cwd.startswith(repo.rstrip("/") + "/")):
+                    continue
+                ts = e.get("timestamp") or ""
+                if since and ts < since:
+                    continue
+                found = []
+                if e.get("type") == "assistant" and isinstance(content, list):
+                    found = [(c.get("id"), (c.get("input") or {}).get("skill"), "auto") for c in content
+                             if isinstance(c, dict) and c.get("type") == "tool_use" and c.get("name") == "Skill"]
+                elif e.get("type") == "user" and isinstance(content, str):
+                    found = [(e.get("uuid") or e.get("promptId"), m, "typed") for m in COMMAND_RE.findall(content)[:1]]
+                for key, skill, how in found:
+                    if skill and key not in seen:
+                        seen.add(key)
+                        yield skill, how, e.get("sessionId"), ts
+
+
+def skill_table(calls):
+    g = defaultdict(lambda: {"auto": 0, "typed": 0, "sessions": set(), "last": ""})
+    for skill, how, session, ts in calls:
+        row = g[skill]
+        row[how] += 1
+        row["sessions"].add(session)
+        row["last"] = max(row["last"], ts[:10])
+    return sorted(({"skill": s, "auto": r["auto"], "typed": r["typed"], "sessions": len(r["sessions"]),
+                    "last": r["last"]} for s, r in g.items()), key=lambda r: -(r["auto"] + r["typed"]))
 
 
 def toplevel(cwd, cache={}):
@@ -103,11 +156,22 @@ def main(argv=None):
     ap.add_argument("--gh", action="store_true", help="map branches to PRs with gh")
     ap.add_argument("--rates", help="JSON file of USD per million tokens by model")
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--skills", action="store_true", help="count skill calls instead of tokens")
     ap.add_argument("--projects", default=os.path.expanduser("~/.claude/projects"))
     a = ap.parse_args(argv)
     rates = json.load(open(a.rates)) if a.rates else None
     repo = os.path.realpath(a.repo) if a.repo else None
     paths = glob.glob(os.path.join(a.projects, "*", "*.jsonl"))
+    if a.skills:
+        rows = skill_table(skill_calls(paths, repo, a.since))
+        if a.json:
+            json.dump(rows, sys.stdout, indent=1)
+            return
+        head = ["skill", "auto", "typed", "sessions", "last"]
+        print("| " + " | ".join(head) + " |\n|" + "---|" * len(head))
+        for r in rows:
+            print("| " + " | ".join(str(r[h]) for h in head) + " |")
+        return
     groups = aggregate(usage_rows(paths, repo, a.since), rates)
     pr_maps = {}
     rows = []

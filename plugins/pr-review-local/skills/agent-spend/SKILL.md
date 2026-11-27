@@ -1,6 +1,6 @@
 ---
 name: "agent-spend"
-description: "Use when asked what Claude Code or agent work cost, how many tokens a PR, branch, feature or repo used, which PRs were most expensive, or for agent spend broken down by PR. Reads local session transcripts only, groups token usage by repo and branch, maps branches to PRs, and prices it only with rates the user supplies."
+description: "Use when asked what Claude Code or agent work cost, how many tokens a PR, branch, feature or repo used, which PRs were most expensive, or for agent spend broken down by PR; also when asked which skills get used or never fire. Reads local session transcripts only, groups token usage by repo and branch, maps branches to PRs, prices it only with rates the user supplies, and counts skill calls per skill."
 ---
 
 # Agent Spend
@@ -20,6 +20,14 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/spend_by_pr.py" --repo . --gh
 | `--gh` | map branches to PRs with `gh pr list` (read-only) |
 | `--rates rates.json` | add a USD column: `{"<model id>": {"input": X, "output": X, "cache_write": X, "cache_read": X}}`, USD per million tokens |
 | `--json` | rows as JSON |
+| `--skills` | count skill use instead of tokens: per skill, Skill tool calls (`auto`), typed `/commands` (`typed`), sessions and last date |
+
+## Skill use
+
+When asked which skills get used, which never fire, or whether a skill change helped, run with `--skills` (add `--since` to compare before and after a change). Show the table, then one line each:
+- the most-used skills, and the share of use that was `auto` (Claude picked the skill) versus `typed` (the user named it);
+- skills in this session's available-skills list with no calls in the period. These are the ones whose descriptions to rewrite first;
+- built-in commands in the `typed` column (`/model`, `/clear`...) are not skills; leave them out of the summary.
 
 ## Report
 

@@ -37,7 +37,7 @@ Status is ✓, ✗ blocks or ⚠ may bite. Each fix is one command, or one sente
 
 ## Rules
 
-- Do not install, upgrade, start services or change config. Fixes are listed; you run them only on the user's yes, one at a time.
+- Do not install, upgrade, start services or change config. Fixes are listed; you run them only on the user's yes, one at a time: ask with `AskUserQuestion` per fix, in the report's order (Run it (Recommended) / Skip / Stop). After the last fix, rerun step 2 and show the table again.
 - Do not open secrets files or echo values, even to "check" one.
 - If the repo declares nothing for something, say "not declared", not ✗.
 

@@ -59,9 +59,9 @@ Proposed fixes are text only. Return only this table plus at most 5 lines of not
 
 ## 2. Show the issue list, then stop
 
-Merge the five tables into one, grouped by the five headings and numbered `G<group>-<n>`. Drop duplicates, and mark each issue `S/M/L`. Lead with the count per group and the PASS count. Flag anything that needs a decision you must not make alone (new brand colors, copy for the one-line pitch, removing a page, a new dependency) with the options and your pick.
+Merge the five tables into one, grouped by the five headings and numbered `G<group>-<n>`. Drop duplicates, and mark each issue `S/M/L`. Lead with the count per group and the PASS count. Flag anything that needs a decision you must not make alone (new brand colors, copy for the one-line pitch, removing a page, a new dependency) with the options and your pick, and put each to the user with `AskUserQuestion` (your pick first and marked `(Recommended)`, up to 4 per call).
 
-**Do not change anything until the user confirms.** They may approve all of it, a subset by number, or edit fixes. Write nothing, not even DESIGN.md, before that yes.
+**Do not change anything until the user confirms.** Ask with `AskUserQuestion`: Fix all (Recommended) / Fix S and M only / I'll list the numbers. They may also edit fixes. Write nothing, not even DESIGN.md, before that yes.
 
 ## 3. Fix everything yourself, in one pass
 
@@ -89,6 +89,8 @@ Recheck each fixed issue yourself in the running site (resize, keyboard, the flo
 ```
 
 Do not commit, push or deploy unless the user asks.
+
+Then offer the next step in one `AskUserQuestion`: Check the backend too (`launch-safe`) (Recommended) / Commit the fixes / Stop. A click on Commit is a yes to commit only, not to push or deploy.
 
 ## Learn from this run
 

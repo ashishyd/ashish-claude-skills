@@ -1,7 +1,7 @@
 {
   "name": "vibe-coder",
   "displayName": "Vibe Coder",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Everyday coding habits and pre-launch checks: private preview links, context-saving rules, explicit state machines, bug triage, and front-end and back-end audits before a site goes live.",
   "author": {
     "name": "Ashish Yadav"

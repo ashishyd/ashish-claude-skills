@@ -108,7 +108,7 @@ A plugin in `plugins/pr-review/` with two skills and no hooks. `agent-spend` run
 | Skill | What it does |
 |---|---|
 | `reviewer-brief` | Writes a one-screen brief for the human reviewer: what changed and why, where to look hard (`file:line`, riskiest first), how it was verified, what was not, risk if wrong and rollback. Goes into the PR body only on your yes. |
-| `agent-spend` (in `pr-review-local`) | Token usage per repo, branch and PR from your local Claude Code transcripts (`scripts/spend_by_pr.py`), PRs mapped with `gh`. Shows dollars only with a rates file you supply. |
+| `agent-spend` (in `pr-review-local`) | Token usage per repo, branch and PR from your local Claude Code transcripts (`scripts/spend_by_pr.py`), PRs mapped with `gh`. Shows dollars only with a rates file you supply. With `--skills` it counts skill use instead: calls Claude made (`auto`) and `/commands` you typed (`typed`) per skill, so you can see which skills never fire. |
 | `pr-splitter` | Plans a large branch as a stack of small PRs, one concern each, that build and pass tests on their own. On your yes it creates the branches from the original (left untouched), checks the stack's final diff equals the original, and asks before pushing. |
 
 Install it with `/plugin install pr-review --marketplace ashishyd/ashish-claude-skills`, and `pr-review-local` the same way for `agent-spend` (needs `python3`).
@@ -152,6 +152,16 @@ A plugin in `plugins/directory-readiness/` with two skills and no hooks. It chec
 Self-check: `python3 plugins/directory-readiness/scripts/test_check.py`. It cannot run portal-side checks (name availability, brand look-alikes, the security scan).
 
 Install it with `/plugin install directory-readiness --marketplace ashishyd/ashish-claude-skills`.
+
+## skill-router-hook plugin
+
+An optional plugin in `plugins/skill-router-hook/`, a single `SessionStart` hook. At startup, `/clear` and compact it adds a one-screen index (`hooks/router.md`, about 600 tokens) that maps moments in the work to skills in this marketplace. Claude then checks for a fitting skill before acting, using only the skills you have installed. Self-check: `python3 plugins/skill-router-hook/hooks/test_router.py` confirms every skill the index names exists.
+
+Install it with `/plugin install skill-router-hook --marketplace ashishyd/ashish-claude-skills`.
+
+## Decisions as buttons
+
+Where a skill needs your call (open decisions in `new-feature`, the fix list in `launch-ready`, priorities in `close-gaps`, filing an issue in `bug-triager`, running a fix in `env-doctor`), it asks with `AskUserQuestion`, which Claude Code shows as option buttons with the recommended choice first. Skills that lead to another one end with a next-step question, for example `design-match` -> close the gaps now, `threat-model` -> audit the flagged code, `pr-splitter` -> reviewer briefs. In apps without that tool, the same options appear as a numbered list.
 
 ## Learning from runs
 

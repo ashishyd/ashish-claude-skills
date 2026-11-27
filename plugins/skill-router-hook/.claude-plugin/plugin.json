@@ -1,0 +1,8 @@
+{
+  "name": "skill-router-hook",
+  "version": "0.1.0",
+  "description": "A SessionStart hook that gives Claude a one-screen index of the ashish-claude-skills skills (which skill fits which moment), so it checks for a skill before acting, asks decisions with option buttons and offers each skill's next step. Lists only names; uses only the skills you have installed.",
+  "author": { "name": "Ashish Yadav" },
+  "license": "MIT",
+  "keywords": ["skills", "router", "hook", "session-start"]
+}

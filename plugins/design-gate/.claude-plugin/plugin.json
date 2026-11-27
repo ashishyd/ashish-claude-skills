@@ -1,6 +1,6 @@
 {
   "name": "design-gate",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Checks a built UI against its design mock (Figma, image, PDF, HTML or claude.ai artifact) in every aspect: missing screens, sections, controls and features, content, states, layout and visual tokens. It also keeps the gap report current when the mock changes, and drafts designer questions. Gap checklists are written for Sonnet subagents to work through cold, and each gap is re-checked. Add design-gate-local for the AI-slop gate and a hook that reminds you to re-check after UI edits.",
   "author": {
     "name": "Ashish Yadav"

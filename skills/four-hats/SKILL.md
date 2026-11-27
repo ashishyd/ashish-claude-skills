@@ -79,6 +79,11 @@ Read the relevant code, schema and instruction file before answering. Each findi
 - An unmitigated one-way door caps the verdict at BUILD SMALLER.
 - Report findings as they are. A plan the user is attached to gets the same verdict as any other plan.
 
+## Ask, then offer the next step
+
+- Put each "question only the human can answer" that has options you can name to the user with `AskUserQuestion` (up to 4 per call, your pick first and marked `(Recommended)`). Open-ended questions stay as text. Without that tool, a numbered list.
+- Then offer the next step in one `AskUserQuestion`, by verdict: BUILD or BUILD SMALLER -> Build the slice (`feature-flow:new-feature` if present) (Recommended) / Change the plan / Stop. SPIKE FIRST -> Build the spike / Stop. DEFER or DON'T -> Note it and stop (Recommended) / Build anyway.
+
 ## Reviewing a diff with the four hats
 
 - Founder: does the diff do only what was asked?

@@ -22,9 +22,9 @@ Base frequency on evidence (logs, reports, how common the input is), not on what
 
 ## Act
 
-- **Below 5 → file it, leave the code alone.** Draft an issue: title, steps to reproduce, both scores with the reason for each, and the suspected cause with `file:line`. Show the draft and ask before running `gh issue create` (filing is public). If the repo has no issue tracker, or the user says no, list it under "Noticed, not fixed" in your report.
+- **Below 5 → file it, leave the code alone.** Draft an issue: title, steps to reproduce, both scores with the reason for each, and the suspected cause with `file:line`. Show the draft and ask with `AskUserQuestion` (File the issue (Recommended) / Note it only / Fix it anyway) before running `gh issue create` (filing is public). If the repo has no issue tracker, or the user says no, list it under "Noticed, not fixed" in your report.
 - **5 or more → fix it**, smallest fix at the root cause, plus a test that reproduces it.
-- **Severity 9-10 (data loss, security, money)**: always tell the user now, whatever the product, and do not settle it by score alone.
+- **Severity 9-10 (data loss, security, money)**: always tell the user now, whatever the product, and do not settle it by score alone. Ask with `AskUserQuestion`: Fix now (Recommended) / File it / Leave it.
 
 Show the scores in one table before acting on several bugs:
 

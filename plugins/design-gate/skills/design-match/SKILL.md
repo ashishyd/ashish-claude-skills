@@ -159,7 +159,7 @@ Group the questions by screen, link each to its frame, say which gap each one bl
 - Start the dev server if you need it. Do not deploy, migrate, seed a shared database or call paid APIs.
 - Never open `.env` files. Never type real credentials.
 - Every `DIFFERS` row carries both values: `mock 24px / build 18px`.
-- End with: `Next: run close-gaps on .claude/design-gate/<slug>.md (P0–P1 first)`. If any question is open, say that it blocks the items that depend on it.
+- End by offering the fix with `AskUserQuestion`: Close the gaps now, P0–P1 first (Recommended) / Answer the open questions first (only if any) / Stop. On "Close the gaps now", invoke `close-gaps` with the report path; it hands the gaps to Sonnet subagents. Without that tool, end with: `Next: run close-gaps on .claude/design-gate/<slug>.md (P0–P1 first)`. If any question is open, say that it blocks the items that depend on it.
 
 ## Opus advisor
 

@@ -35,8 +35,8 @@ Save the planner's answer as `.claude/features/<slug>.md` at the repo root. Keep
 
 Show the user the outcome, the check, and the step list (one line each), in at most 15 lines.
 
-- **Open decisions not "none"**: ask the user each one (one line per option, with the planner's recommendation first) and wait. Write the answers into the checklist before building. Never pick silently on architecture, data model, auth, money or a new dependency.
-- **More than 8 steps, or a step the user would call risky**: wait for a yes on the plan.
+- **Open decisions not "none"**: ask the user each one with `AskUserQuestion` (one question per decision, up to 4 per call, the planner's recommendation first and marked `(Recommended)`; without that tool, one line per option) and wait. Write the answers into the checklist before building. Never pick silently on architecture, data model, auth, money or a new dependency.
+- **More than 8 steps, or a step the user would call risky**: wait for a yes on the plan (`AskUserQuestion`: Start building (Recommended) / Change the plan / Stop).
 - **Otherwise**: say "Starting." and go on.
 
 ## 3. Build and test (Sonnet, medium effort)
@@ -83,6 +83,10 @@ Do not commit, push or open a PR unless the user asks.
 **You need to:** <commit, migrate, set env var... or "nothing">
 **Noticed, not fixed:** <one line each, or "nothing">
 ```
+
+## Next step
+
+After the report, offer the next step in one `AskUserQuestion`, listing only skills present in this session: Review the diff (`standards-review`) (Recommended) / Write the PR brief (`pr-review:reviewer-brief`) / Commit / Stop. Run the pick. A click on Commit is a yes to commit only, not to push.
 
 ## Model roles
 

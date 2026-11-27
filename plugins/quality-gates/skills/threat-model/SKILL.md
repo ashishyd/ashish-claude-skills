@@ -110,11 +110,13 @@ Tools: `<command>` -> <result>
 
 Use the severity scale from `security-code-audit` for any concrete vulnerability found along the way, in its finding format.
 
+After the report, offer the follow-up in one `AskUserQuestion`, listing only skills present in this session: Audit the flagged code (`security-code-audit`) / Check sign-in and roles (`login-and-access`) / Map the personal data (`personal-data`) / Stop. Mark `(Recommended)` on the one that covers the highest-impact open threat.
+
 ## Rules
 
 - Read-only unless asked to fix. Never open `.env`, key files or dumps. Never sign in to production or test against it.
 - Every threat ties to a real entry point in this code or config. No generic lists copied from memory.
-- Accepting a risk, launching with an open high item, or choosing a vendor or tester is the user's call; ask.
+- Accepting a risk, launching with an open high item, or choosing a vendor or tester is the user's call; ask with `AskUserQuestion`, one question per decision (Fix before launch (Recommended) / Accept the risk, with owner and date), without that tool as text.
 - When nothing is wrong, write "No open threats" and show the entry point table.
 
 ## Opus advisor

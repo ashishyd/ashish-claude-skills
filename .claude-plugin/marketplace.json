@@ -84,6 +84,11 @@
       "name": "directory-readiness",
       "source": "./plugins/directory-readiness",
       "description": "Checks a plugin and its skills against the Claude directory pre-submission checklist and Software Directory Policy before you submit: portal-style Blocks, reviewer Holds and Warnings, per-app support, and draft data-handling answers. Includes a read-only stdlib python3 checker."
+    },
+    {
+      "name": "skill-router-hook",
+      "source": "./plugins/skill-router-hook",
+      "description": "Optional companion, own marketplace only. A SessionStart hook that gives Claude a one-screen index of which skill from this marketplace fits which moment, so it checks for a skill before acting, asks decisions with option buttons and offers each skill's next step. Uses only the skills you have installed."
     }
   ]
 }

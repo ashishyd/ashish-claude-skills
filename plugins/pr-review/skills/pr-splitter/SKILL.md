@@ -29,7 +29,7 @@ Each slice must:
 - Aim for under ~400 changed lines. A bigger slice that cannot split cleanly is fine; say why.
 - Keep a test with the code it tests.
 
-Show the plan as a table and wait for a yes:
+Show the plan as a table, then ask with `AskUserQuestion` (Build the stack (Recommended) / Change the slices / Don't split) and wait:
 
 | # | Branch | Concern | Files | +/- | Depends on |
 |---|---|---|---|---|---|
@@ -50,7 +50,7 @@ Last check: `git diff <original> <top slice>` must be empty. If not, report what
 
 ## 4. Report
 
-The stack table with each branch's build and test result, and the empty-diff check. Pushing and opening PRs are public: ask first. On yes, open each PR with its base set to the slice below it, and offer a /reviewer-brief for each.
+The stack table with each branch's build and test result, and the empty-diff check. Pushing and opening PRs are public: ask first with `AskUserQuestion` (Push and open the PRs (Recommended) / Keep the branches local). On yes, open each PR with its base set to the slice below it. Then offer the next step the same way: Write a reviewer brief for each PR (`reviewer-brief`) (Recommended) / Stop.
 
 ## Do not
 
